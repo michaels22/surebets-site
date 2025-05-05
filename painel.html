@@ -5,7 +5,7 @@
   <title>Painel Administrativo</title>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, getDocs, collection, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -20,6 +20,8 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    let usuarios = [];
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -73,19 +75,38 @@
       const lista = document.getElementById("listaUsuarios");
       lista.innerHTML = "";
 
+      const filtro = document.getElementById("filtroAtivo").value;
+      const emailBusca = document.getElementById("buscaEmail").value.toLowerCase();
+
       const querySnapshot = await getDocs(collection(db, "usuarios"));
+      usuarios = [];
+
       querySnapshot.forEach((docSnap) => {
         const user = docSnap.data();
-        const uid = docSnap.id;
+        user.id = docSnap.id;
+        usuarios.push(user);
+      });
 
+      if (filtro !== "todos") {
+        usuarios = usuarios.filter(u => u.ativo.toString() === filtro);
+      }
+
+      if (emailBusca) {
+        usuarios = usuarios.filter(u => u.email.toLowerCase().includes(emailBusca));
+      }
+
+      usuarios.sort((a, b) => a.diasRestantes - b.diasRestantes);
+
+      usuarios.forEach(user => {
         const div = document.createElement("div");
         div.style.marginTop = "20px";
         div.innerHTML = `
           <strong>${user.email}</strong><br>
-          Dias restantes: <input type="number" value="${user.diasRestantes}" id="dias-${uid}" style="width:60px;" />
-          Ativo: <input type="checkbox" id="ativo-${uid}" ${user.ativo ? "checked" : ""} />
-          Admin: <input type="checkbox" id="admin-${uid}" ${user.admin ? "checked" : ""} />
-          <button onclick="atualizarUsuario('${uid}')">Salvar</button>
+          Dias restantes: <input type="number" value="${user.diasRestantes}" id="dias-${user.id}" style="width:60px;" />
+          Ativo: <input type="checkbox" id="ativo-${user.id}" ${user.ativo ? "checked" : ""} />
+          Admin: <input type="checkbox" id="admin-${user.id}" ${user.admin ? "checked" : ""} />
+          <button onclick="atualizarUsuario('${user.id}')">Salvar</button>
+          <button onclick="resetarSenha('${user.email}')">Resetar Senha</button>
         `;
         lista.appendChild(div);
       });
@@ -105,6 +126,17 @@
 
       alert("Usuário atualizado com sucesso!");
     }
+
+    window.resetarSenha = async function(email) {
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert("Email de redefinição de senha enviado para " + email);
+      } catch (err) {
+        alert("Erro ao enviar email: " + err.message);
+      }
+    }
+
+    window.filtrarUsuarios = carregarUsuarios;
   </script>
   <style>
     body {
@@ -113,14 +145,14 @@
       font-family: Arial;
       padding: 2rem;
     }
-    h1 {
+    h1, h2 {
       color: #0f0;
     }
     label {
       display: block;
       margin-top: 10px;
     }
-    input, button {
+    input, button, select {
       padding: 8px;
       width: 300px;
       margin-top: 5px;
@@ -130,7 +162,7 @@
     button {
       background-color: #0f0;
       color: #000;
-      margin-top: 15px;
+      margin-top: 10px;
       cursor: pointer;
     }
   </style>
@@ -159,6 +191,17 @@
   <hr>
 
   <h2>Usuários Cadastrados</h2>
+
+  <label for="filtroAtivo">Filtrar por status:</label>
+  <select id="filtroAtivo" onchange="filtrarUsuarios()">
+    <option value="todos">Todos</option>
+    <option value="true">Ativos</option>
+    <option value="false">Inativos</option>
+  </select>
+
+  <label for="buscaEmail">Buscar por email:</label>
+  <input type="text" id="buscaEmail" oninput="filtrarUsuarios()" placeholder="Digite o email..." />
+
   <div id="listaUsuarios"></div>
 </body>
 </html>
