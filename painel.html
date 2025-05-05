@@ -4,21 +4,63 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel Admin - Betsafe</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      padding: 2rem;
+    }
+    h1 {
+      color: #00c853;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.5rem;
+      border: 1px solid #333;
+      text-align: left;
+    }
+    th {
+      background: #1f1f1f;
+    }
+    input, select {
+      background: #1a1a1a;
+      color: white;
+      border: 1px solid #333;
+      padding: 4px;
+    }
+    button {
+      background-color: #00c853;
+      border: none;
+      color: white;
+      padding: 4px 8px;
+      margin: 2px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Painel Administrativo</h1>
+  <div id="tabelaUsuarios"></div>
+
   <script type="module">
-    // Importar SDKs do Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import {
-      getFirestore, collection, getDocs, addDoc, updateDoc, doc
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import {
-      getAuth, onAuthStateChanged, signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
       authDomain: "surebetsadmin.firebaseapp.com",
       projectId: "surebetsadmin",
-      storageBucket: "surebetsadmin.appspot.com",
+      storageBucket: "surebetsadmin.firebasestorage.app",
       messagingSenderId: "239373466777",
       appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
     };
@@ -27,105 +69,93 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    const userList = document.getElementById("userList");
-    const addUserForm = document.getElementById("addUserForm");
-
     onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userDoc = await getDocs(collection(db, "usuarios"));
-        let isAdmin = false;
-        userDoc.forEach(docu => {
-          if (docu.id === user.uid && docu.data().admin === true) {
-            isAdmin = true;
-          }
-        });
-        if (!isAdmin) {
-          alert("Acesso negado: apenas administradores.");
-          window.location.href = "index.html";
-        } else {
-          loadUsers();
-        }
-      } else {
+      if (!user) {
         window.location.href = "index.html";
+        return;
       }
+
+      const usuarioRef = doc(db, "usuarios", user.uid);
+      const usuarioSnap = await getDocs(collection(db, "usuarios"));
+      let isAdmin = false;
+
+      usuarioSnap.forEach((docSnap) => {
+        if (docSnap.id === user.uid && docSnap.data().admin === true) {
+          isAdmin = true;
+        }
+      });
+
+      if (!isAdmin) {
+        alert("Acesso negado. Você não é administrador.");
+        window.location.href = "index.html";
+        return;
+      }
+
+      carregarUsuarios();
     });
 
-    async function loadUsers() {
-      userList.innerHTML = "";
+    async function carregarUsuarios() {
+      const tabela = document.getElementById("tabelaUsuarios");
       const querySnapshot = await getDocs(collection(db, "usuarios"));
+
+      let html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Dias Restantes</th>
+              <th>Ativo</th>
+              <th>Admin</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
       querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <strong>${data.email}</strong><br>
-          Ativo: <input type="checkbox" ${data.ativo ? "checked" : ""} onchange="updateField('${docSnap.id}', 'ativo', this.checked)">
-          Admin: <input type="checkbox" ${data.admin ? "checked" : ""} onchange="updateField('${docSnap.id}', 'admin', this.checked)">
-          Dias restantes: <input type="number" value="${data.diasRestantes}" onchange="updateField('${docSnap.id}', 'diasRestantes', this.value)">
-          <hr>
+        const dados = docSnap.data();
+        html += `
+          <tr>
+            <td>${dados.email}</td>
+            <td>
+              <input type="number" value="${dados.diasRestantes}" onchange="editarCampo('${docSnap.id}', 'diasRestantes', this.value)" />
+            </td>
+            <td>
+              <select onchange="editarCampo('${docSnap.id}', 'ativo', this.value === 'true')">
+                <option value="true" ${dados.ativo ? "selected" : ""}>Sim</option>
+                <option value="false" ${!dados.ativo ? "selected" : ""}>Não</option>
+              </select>
+            </td>
+            <td>
+              <select onchange="editarCampo('${docSnap.id}', 'admin', this.value === 'true')">
+                <option value="true" ${dados.admin ? "selected" : ""}>Sim</option>
+                <option value="false" ${!dados.admin ? "selected" : ""}>Não</option>
+              </select>
+            </td>
+            <td>
+              <button onclick="editarCampo('${docSnap.id}', 'dataInicio', new Date().toISOString())">Resetar Início</button>
+              <button onclick="removerUsuario('${docSnap.id}', '${dados.email}')">Remover</button>
+            </td>
+          </tr>
         `;
-        userList.appendChild(div);
       });
+
+      html += `</tbody></table>`;
+      tabela.innerHTML = html;
     }
 
-    window.updateField = async (id, field, value) => {
-      const userRef = doc(db, "usuarios", id);
-      await updateDoc(userRef, { [field]: field === "diasRestantes" ? Number(value) : value });
-      alert("Atualizado!");
-    };
+    window.editarCampo = async function(id, campo, valor) {
+      const docRef = doc(db, "usuarios", id);
+      await updateDoc(docRef, { [campo]: campo === "diasRestantes" ? Number(valor) : valor });
+      alert("Atualizado com sucesso.");
+    }
 
-    addUserForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = e.target.email.value;
-      const ativo = e.target.ativo.checked;
-      const admin = e.target.admin.checked;
-      const dias = Number(e.target.dias.value);
-
-      await addDoc(collection(db, "usuarios"), {
-        email, ativo, admin, diasRestantes: dias
-      });
-
-      e.target.reset();
-      alert("Usuário adicionado!");
-      loadUsers();
-    });
-
-    window.logout = async () => {
-      await signOut(auth);
-      window.location.href = "index.html";
-    };
+    window.removerUsuario = async function(id, email) {
+      if (!confirm(`Tem certeza que deseja remover o usuário: ${email}?`)) return;
+      await deleteDoc(doc(db, "usuarios", id));
+      alert("Usuário removido.");
+      carregarUsuarios();
+    }
   </script>
-  <style>
-    body {
-      background-color: #0f0f0f;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      padding: 2rem;
-    }
-    input, button {
-      margin: 0.3rem 0;
-      padding: 0.5rem;
-    }
-    #userList {
-      margin-top: 2rem;
-    }
-    hr {
-      border: 0.5px solid #333;
-    }
-  </style>
-</head>
-<body>
-  <h1>Painel Administrativo</h1>
-  <button onclick="logout()">Sair</button>
-
-  <h2>Adicionar Usuário</h2>
-  <form id="addUserForm">
-    <input type="email" name="email" placeholder="Email" required><br>
-    <label><input type="checkbox" name="ativo"> Ativo</label><br>
-    <label><input type="checkbox" name="admin"> Admin</label><br>
-    <input type="number" name="dias" placeholder="Dias Restantes" required><br>
-    <button type="submit">Adicionar</button>
-  </form>
-
-  <div id="userList"></div>
 </body>
 </html>
