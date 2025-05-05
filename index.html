@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -61,17 +60,61 @@
     <div class="error" id="erroLogin"></div>
   </div>
 
-  <script>
-    function logar() {
-      const email = document.getElementById("email").value;
+  <!-- Firebase SDKs -->
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
+      authDomain: "surebetsadmin.firebaseapp.com",
+      projectId: "surebetsadmin",
+      storageBucket: "surebetsadmin.firebasestorage.app",
+      messagingSenderId: "239373466777",
+      appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    async function logar() {
+      const email = document.getElementById("email").value.trim();
       const senha = document.getElementById("senha").value;
       const erro = document.getElementById("erroLogin");
+      erro.textContent = "";
 
-      if (email === "eduarda.brito459@gmail.com" && senha === "1234") {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        const uid = userCredential.user.uid;
+
+        const userDocRef = doc(db, "usuarios", uid);
+        const userDoc = await getDoc(userDocRef);
+
+        if (!userDoc.exists()) {
+          erro.textContent = "Usuário não registrado no sistema.";
+          return;
+        }
+
+        const userData = userDoc.data();
+        if (!userData.ativo) {
+          erro.textContent = "Acesso desativado. Contate o administrador.";
+          return;
+        }
+
         localStorage.setItem("logado", "true");
+        localStorage.setItem("email", email);
         window.location.href = "dashboard.html";
-      } else {
-        erro.textContent = "Email ou senha incorretos.";
+
+      } catch (e) {
+        if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
+          erro.textContent = "Email ou senha incorretos.";
+        } else {
+          erro.textContent = "Erro ao fazer login. Tente novamente.";
+          console.error(e);
+        }
       }
     }
   </script>
