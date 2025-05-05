@@ -193,7 +193,12 @@
         <td class="lucro">R$0</td>
       </tr>
     </table>
-    <div id="resultado"></div>
+
+    <div id="resultado" style="display: flex; justify-content: space-between; margin-top: 1rem;">
+      <p id="totalInvestidoTexto" style="color: white;">Total investido: R$0</p>
+      <p id="porcentagemLucro" style="color:#00c853; font-weight: bold;">0%</p>
+    </div>
+
     <br />
     <button onclick="abrirJanelas()">Abrir todas as casas</button>
   </div>
@@ -208,18 +213,15 @@
       document.getElementById('filtrosModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
     }
-
     function abrirCalculadora() {
       document.getElementById('calculadoraModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
     }
-
     function fecharModais() {
       document.getElementById('filtrosModal').style.display = 'none';
       document.getElementById('calculadoraModal').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
     }
-
     function abrirJanelas() {
       window.open('https://blaze.bet.br', '_blank');
       window.open('https://bet365.com', '_blank');
@@ -230,7 +232,8 @@
       const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
       const lucros = document.querySelectorAll('.lucro');
-      const resultado = document.getElementById('resultado');
+      const totalInvestidoTexto = document.getElementById('totalInvestidoTexto');
+      const porcentagemLucro = document.getElementById('porcentagemLucro');
       const valorTotalInput = document.getElementById('valorTotalInvestido');
 
       const odd1 = parseFloat(odds[0].value);
@@ -257,7 +260,8 @@
       lucros[1].textContent = `R$${lucro2}`;
 
       const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
-      resultado.innerHTML = `<p style="color:#00c853">Porcentagem: ${porcentagem}%</p>`;
+      totalInvestidoTexto.textContent = `Total investido: R$${totalInvestido.toFixed(2)}`;
+      porcentagemLucro.textContent = `${porcentagem}%`;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
