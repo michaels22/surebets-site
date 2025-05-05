@@ -99,7 +99,7 @@
       margin: 1rem 0;
     }
     input[type="number"] {
-      width: 60px;
+      width: 70px;
       padding: 4px;
       background: #333;
       color: white;
@@ -172,6 +172,10 @@
       <button onclick="fecharModais()">X</button>
     </div>
     <p>kc royals - chi white sox</p>
+    <div class="input-group">
+      <label>Valor total a investir:</label>
+      <input type="number" id="valorTotalInvestido" placeholder="Opcional" />
+    </div>
     <table>
       <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
       <tr>
@@ -197,52 +201,6 @@
     <button onclick="abrirJanelas()">Abrir todas as casas</button>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
-      authDomain: "surebetsadmin.firebaseapp.com",
-      projectId: "surebetsadmin",
-      storageBucket: "surebetsadmin.appspot.com",
-      messagingSenderId: "239373466777",
-      appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "index.html";
-        return;
-      }
-
-      document.getElementById("userEmail").textContent = user.email;
-
-      const userDoc = await getDoc(doc(db, "usuarios", user.uid));
-      if (!userDoc.exists()) {
-        alert("Usuário não encontrado.");
-        window.location.href = "index.html";
-        return;
-      }
-
-      const dados = userDoc.data();
-      if (!dados.ativo || (dados.diasRestantes ?? 0) <= 0) {
-        alert("Acesso negado. Usuário inativo ou sem dias restantes.");
-        window.location.href = "index.html";
-        return;
-      }
-
-      document.getElementById("diasRestantes").textContent = `Dias restantes: ${dados.diasRestantes ?? 0}`;
-    });
-  </script>
-
-  <!-- Lógica de app -->
   <script>
     function logout() {
       localStorage.removeItem("logado");
@@ -253,19 +211,15 @@
       document.getElementById('filtrosModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
     }
-
     function abrirCalculadora() {
       document.getElementById('calculadoraModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
-      ativarAutoCalculo();
     }
-
     function fecharModais() {
       document.getElementById('filtrosModal').style.display = 'none';
       document.getElementById('calculadoraModal').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
     }
-
     function abrirJanelas() {
       window.open('https://blaze.bet.br', '_blank');
       window.open('https://bet365.com', '_blank');
@@ -277,27 +231,36 @@
       const valores = document.querySelectorAll('.valor');
       const lucros = document.querySelectorAll('.lucro');
       const resultado = document.getElementById('resultado');
+      const valorTotalInput = document.getElementById('valorTotalInvestido');
 
-      let totalApostado = 0;
-      let maxLucro = 0;
+      const odd1 = parseFloat(odds[0].value);
+      const odd2 = parseFloat(odds[1].value);
+      let valor1, valor2;
+      let totalInvestido = parseFloat(valorTotalInput.value);
 
-      for (let i = 0; i < odds.length; i++) {
-        const odd = parseFloat(odds[i].value);
-        const valor = parseFloat(valores[i].value);
-        const lucro = (odd * valor - valor).toFixed(2);
-
-        lucros[i].textContent = `R$${lucro}`;
-        totalApostado += valor;
-        if (odd * valor - valor > maxLucro) {
-          maxLucro = odd * valor - valor;
-        }
+      if (!isNaN(totalInvestido) && totalInvestido > 0) {
+        valor1 = totalInvestido / (1 + (odd1 / odd2));
+        valor2 = totalInvestido - valor1;
+        valores[0].value = valor1.toFixed(2);
+        valores[1].value = valor2.toFixed(2);
+      } else {
+        valor1 = parseFloat(valores[0].value);
+        if (isNaN(valor1)) valor1 = 0;
+        valor2 = (valor1 * odd1) / odd2;
+        valores[1].value = valor2.toFixed(2);
+        totalInvestido = valor1 + valor2;
       }
 
-      const porcentagem = ((maxLucro / totalApostado) * 100).toFixed(2);
+      const lucro1 = (valor1 * odd1 - totalInvestido).toFixed(2);
+      const lucro2 = (valor2 * odd2 - totalInvestido).toFixed(2);
+      lucros[0].textContent = `R$${lucro1}`;
+      lucros[1].textContent = `R$${lucro2}`;
 
+      const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
       resultado.innerHTML = `
-        <p>Total apostado: R$${totalApostado.toFixed(2)}</p>
-        <p style="color:#00c853">Porcentagem ganha: ${porcentagem}%</p>
+        <p>Total investido: R$${totalInvestido.toFixed(2)}</p>
+        <p style="color:#00c853">Lucro garantido: R$${Math.min(lucro1, lucro2)}</p>
+        <p style="color:#00c853">Porcentagem: ${porcentagem}%</p>
       `;
     }
 
@@ -307,10 +270,7 @@
       const valores = document.querySelectorAll('.valor');
 
       for (let i = 0; i < odds.length; i++) {
-        aposta.push({
-          odd: odds[i].value,
-          valor: valores[i].value
-        });
+        aposta.push({ odd: odds[i].value, valor: valores[i].value });
       }
 
       localStorage.setItem('ultimaAposta', JSON.stringify(aposta));
@@ -332,12 +292,12 @@
       calcularLucro();
     }
 
-    function ativarAutoCalculo() {
-      const inputs = document.querySelectorAll('.odd, .valor');
-      inputs.forEach(input => {
-        input.addEventListener('input', calcularLucro);
+    // Atualização automática ao digitar
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
+        el.addEventListener('input', calcularLucro);
       });
-    }
+    });
   </script>
 </body>
 </html>
