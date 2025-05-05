@@ -73,16 +73,6 @@
     </div>
   </div>
 
-  <!-- Toast -->
-  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-    <div id="toast" class="toast text-white bg-success" role="alert" data-bs-delay="3000" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body" id="toast-msg">Mensagem</div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-    </div>
-  </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
@@ -103,16 +93,6 @@
 
     let usuarios = [];
 
-    function mostrarToast(mensagem, sucesso = true) {
-      const toast = new bootstrap.Toast(document.getElementById("toast"));
-      const toastEl = document.getElementById("toast");
-      const msg = document.getElementById("toast-msg");
-      msg.textContent = mensagem;
-      toastEl.classList.remove("bg-success", "bg-danger");
-      toastEl.classList.add(sucesso ? "bg-success" : "bg-danger");
-      toast.show();
-    }
-
     onAuthStateChanged(auth, async (user) => {
       if (!user) return location.href = "login.html";
 
@@ -120,7 +100,7 @@
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists() || !docSnap.data().admin) {
-        mostrarToast("Acesso negado.", false);
+        alert("Acesso negado.");
         return location.href = "index.html";
       }
       carregarUsuarios();
@@ -132,16 +112,16 @@
       const dias = parseInt(diasRestantes.value);
       const admin = ehAdmin.checked;
 
-      if (!email || !senha || isNaN(dias)) return mostrarToast("Preencha todos os campos.", false);
+      if (!email || !senha || isNaN(dias)) return alert("Preencha todos os campos.");
 
       try {
         const cred = await createUserWithEmailAndPassword(auth, email, senha);
         await setDoc(doc(db, "usuarios", cred.user.uid), { email, diasRestantes: dias, ativo: true, admin });
-        mostrarToast("Usuário criado com sucesso!");
+        alert("Usuário criado com sucesso!");
         formulario.reset();
         carregarUsuarios();
       } catch (e) {
-        mostrarToast("Erro: " + e.message, false);
+        alert("Erro: " + e.message);
       }
     }
 
@@ -149,25 +129,20 @@
       const dias = parseInt(document.getElementById(`dias-${uid}`).value);
       const ativo = document.getElementById(`ativo-${uid}`).checked;
       const admin = document.getElementById(`admin-${uid}`).checked;
+      const confirmar = confirm("Deseja realmente atualizar este usuário?");
+      if (!confirmar) return;
 
-      if (!ativo && !confirm("Deseja realmente desativar este usuário?")) return;
-      if (!confirm("Deseja realmente atualizar este usuário?")) return;
-
-      try {
-        await updateDoc(doc(db, "usuarios", uid), { diasRestantes: dias, ativo, admin });
-        mostrarToast("Usuário atualizado com sucesso!");
-      } catch (e) {
-        mostrarToast("Erro ao atualizar: " + e.message, false);
-      }
+      await updateDoc(doc(db, "usuarios", uid), { diasRestantes: dias, ativo, admin });
+      alert("Usuário atualizado!");
     }
 
     window.resetarSenha = async function(email) {
       if (!confirm("Enviar email de redefinição de senha para " + email + "?")) return;
       try {
         await sendPasswordResetEmail(auth, email);
-        mostrarToast("Email de redefinição enviado.");
+        alert("Email de redefinição enviado.");
       } catch (e) {
-        mostrarToast("Erro ao enviar email: " + e.message, false);
+        alert("Erro: " + e.message);
       }
     }
 
@@ -209,6 +184,5 @@
       });
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
