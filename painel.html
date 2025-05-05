@@ -2,160 +2,163 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Painel Admin - Betsafe</title>
+  <title>Painel Administrativo</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "surebetsadmin.firebaseapp.com",
+      projectId: "surebetsadmin",
+      storageBucket: "surebetsadmin.appspot.com",
+      messagingSenderId: "SEU_MESSAGING_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const docRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists() || !docSnap.data().admin) {
+        alert("Acesso negado.");
+        window.location.href = "index.html";
+      } else {
+        carregarUsuarios();
+      }
+    });
+
+    async function criarNovoUsuario() {
+      const email = document.getElementById("novoEmail").value;
+      const senha = document.getElementById("novaSenha").value;
+      const dias = parseInt(document.getElementById("diasRestantes").value);
+      const admin = document.getElementById("ehAdmin").checked;
+
+      if (!email || !senha || isNaN(dias)) {
+        alert("Preencha todos os campos corretamente.");
+        return;
+      }
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        const uid = cred.user.uid;
+
+        await setDoc(doc(db, "usuarios", uid), {
+          email: email,
+          diasRestantes: dias,
+          ativo: true,
+          admin: admin
+        });
+
+        alert("Usuário criado com sucesso!");
+        document.getElementById("formulario").reset();
+        carregarUsuarios();
+      } catch (error) {
+        console.error(error);
+        alert("Erro: " + error.message);
+      }
+    }
+
+    async function carregarUsuarios() {
+      const lista = document.getElementById("listaUsuarios");
+      lista.innerHTML = "";
+
+      const querySnapshot = await getDocs(collection(db, "usuarios"));
+      querySnapshot.forEach((docSnap) => {
+        const user = docSnap.data();
+        const uid = docSnap.id;
+
+        const div = document.createElement("div");
+        div.style.marginTop = "20px";
+        div.innerHTML = `
+          <strong>${user.email}</strong><br>
+          Dias restantes: <input type="number" value="${user.diasRestantes}" id="dias-${uid}" style="width:60px;" />
+          Ativo: <input type="checkbox" id="ativo-${uid}" ${user.ativo ? "checked" : ""} />
+          Admin: <input type="checkbox" id="admin-${uid}" ${user.admin ? "checked" : ""} />
+          <button onclick="atualizarUsuario('${uid}')">Salvar</button>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    window.criarNovoUsuario = criarNovoUsuario;
+    window.atualizarUsuario = async function(uid) {
+      const dias = parseInt(document.getElementById(`dias-${uid}`).value);
+      const ativo = document.getElementById(`ativo-${uid}`).checked;
+      const admin = document.getElementById(`admin-${uid}`).checked;
+
+      await updateDoc(doc(db, "usuarios", uid), {
+        diasRestantes: dias,
+        ativo: ativo,
+        admin: admin
+      });
+
+      alert("Usuário atualizado com sucesso!");
+    }
+  </script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #121212;
+      background: #111;
       color: white;
+      font-family: Arial;
       padding: 2rem;
     }
     h1 {
-      color: #00c853;
+      color: #0f0;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
+    label {
+      display: block;
+      margin-top: 10px;
     }
-    th, td {
-      padding: 0.5rem;
-      border: 1px solid #333;
-      text-align: left;
-    }
-    th {
-      background: #1f1f1f;
-    }
-    input, select {
-      background: #1a1a1a;
-      color: white;
-      border: 1px solid #333;
-      padding: 4px;
+    input, button {
+      padding: 8px;
+      width: 300px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: none;
     }
     button {
-      background-color: #00c853;
-      border: none;
-      color: white;
-      padding: 4px 8px;
-      margin: 2px;
-      border-radius: 4px;
+      background-color: #0f0;
+      color: #000;
+      margin-top: 15px;
       cursor: pointer;
-    }
-    button:hover {
-      opacity: 0.9;
     }
   </style>
 </head>
 <body>
   <h1>Painel Administrativo</h1>
-  <div id="tabelaUsuarios"></div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+  <form id="formulario" onsubmit="event.preventDefault(); criarNovoUsuario();">
+    <label for="novoEmail">Email do novo usuário:</label>
+    <input type="email" id="novoEmail" required />
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
-      authDomain: "surebetsadmin.firebaseapp.com",
-      projectId: "surebetsadmin",
-      storageBucket: "surebetsadmin.firebasestorage.app",
-      messagingSenderId: "239373466777",
-      appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
-    };
+    <label for="novaSenha">Senha:</label>
+    <input type="password" id="novaSenha" required />
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+    <label for="diasRestantes">Dias restantes:</label>
+    <input type="number" id="diasRestantes" required />
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "index.html";
-        return;
-      }
+    <label>
+      <input type="checkbox" id="ehAdmin" />
+      Conceder acesso de administrador
+    </label>
 
-      const usuarioRef = doc(db, "usuarios", user.uid);
-      const usuarioSnap = await getDocs(collection(db, "usuarios"));
-      let isAdmin = false;
+    <button type="submit">Criar Usuário</button>
+  </form>
 
-      usuarioSnap.forEach((docSnap) => {
-        if (docSnap.id === user.uid && docSnap.data().admin === true) {
-          isAdmin = true;
-        }
-      });
+  <hr>
 
-      if (!isAdmin) {
-        alert("Acesso negado. Você não é administrador.");
-        window.location.href = "index.html";
-        return;
-      }
-
-      carregarUsuarios();
-    });
-
-    async function carregarUsuarios() {
-      const tabela = document.getElementById("tabelaUsuarios");
-      const querySnapshot = await getDocs(collection(db, "usuarios"));
-
-      let html = `
-        <table>
-          <thead>
-            <tr>
-              <th>Email</th>
-              <th>Dias Restantes</th>
-              <th>Ativo</th>
-              <th>Admin</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-      `;
-
-      querySnapshot.forEach((docSnap) => {
-        const dados = docSnap.data();
-        html += `
-          <tr>
-            <td>${dados.email}</td>
-            <td>
-              <input type="number" value="${dados.diasRestantes}" onchange="editarCampo('${docSnap.id}', 'diasRestantes', this.value)" />
-            </td>
-            <td>
-              <select onchange="editarCampo('${docSnap.id}', 'ativo', this.value === 'true')">
-                <option value="true" ${dados.ativo ? "selected" : ""}>Sim</option>
-                <option value="false" ${!dados.ativo ? "selected" : ""}>Não</option>
-              </select>
-            </td>
-            <td>
-              <select onchange="editarCampo('${docSnap.id}', 'admin', this.value === 'true')">
-                <option value="true" ${dados.admin ? "selected" : ""}>Sim</option>
-                <option value="false" ${!dados.admin ? "selected" : ""}>Não</option>
-              </select>
-            </td>
-            <td>
-              <button onclick="editarCampo('${docSnap.id}', 'dataInicio', new Date().toISOString())">Resetar Início</button>
-              <button onclick="removerUsuario('${docSnap.id}', '${dados.email}')">Remover</button>
-            </td>
-          </tr>
-        `;
-      });
-
-      html += `</tbody></table>`;
-      tabela.innerHTML = html;
-    }
-
-    window.editarCampo = async function(id, campo, valor) {
-      const docRef = doc(db, "usuarios", id);
-      await updateDoc(docRef, { [campo]: campo === "diasRestantes" ? Number(valor) : valor });
-      alert("Atualizado com sucesso.");
-    }
-
-    window.removerUsuario = async function(id, email) {
-      if (!confirm(`Tem certeza que deseja remover o usuário: ${email}?`)) return;
-      await deleteDoc(doc(db, "usuarios", id));
-      alert("Usuário removido.");
-      carregarUsuarios();
-    }
-  </script>
+  <h2>Usuários Cadastrados</h2>
+  <div id="listaUsuarios"></div>
 </body>
 </html>
