@@ -258,8 +258,6 @@
 
       const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
       resultado.innerHTML = `
-        <p>Total investido: R$${totalInvestido.toFixed(2)}</p>
-        <p style="color:#00c853">Lucro garantido: R$${Math.min(lucro1, lucro2)}</p>
         <p style="color:#00c853">Porcentagem: ${porcentagem}%</p>
       `;
     }
