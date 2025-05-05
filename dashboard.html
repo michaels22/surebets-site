@@ -120,36 +120,6 @@
       padding: 6px;
       text-align: center;
     }
-
-    .input-label-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      text-align: right;
-      font-size: 0.75rem;
-      color: #aaa;
-    }
-
-    .input-label-wrapper span.label {
-      margin-bottom: 2px;
-      color: #aaa;
-      font-size: 0.75rem;
-    }
-
-    .input-label-wrapper span.value {
-      font-size: 0.95rem;
-      color: white;
-    }
-
-    .calculadora-modal input[type="number"] {
-      width: 100%;
-      padding: 4px 6px;
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      text-align: right;
-    }
   </style>
 </head>
 <body>
@@ -236,17 +206,13 @@
       </tbody>
     </table>
 
-    <!-- RESULTADO COM LABELS E VALORES -->
-    <div id="resultado" style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1rem; gap: 2rem;">
-      <div class="input-label-wrapper" style="flex: 1;">
-        <span class="label">Total Investido</span>
-        <span class="value" id="totalInvestidoTexto">R$0.00</span>
-        <input type="number" id="valorTotalInvestido" placeholder="Total" style="margin-top: 6px;" />
+    <div id="resultado" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+      <div style="display: flex; align-items: center;">
+        <strong style="color: #00c853; margin-right: 8px;">Total investido:</strong>
+        <span id="totalInvestidoTexto">R$0.00</span>
+        <input type="number" id="valorTotalInvestido" placeholder="Total" style="margin-left: 10px;" />
       </div>
-      <div class="input-label-wrapper" style="width: 100px;">
-        <span class="label">Porcentagem ganha</span>
-        <span class="value" id="porcentagemLucro">0%</span>
-      </div>
+      <strong id="porcentagemLucro" style="color:#00c853;">0%</strong>
     </div>
 
     <br />
@@ -315,6 +281,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      console.log("Página carregada");
       document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
         el.addEventListener('input', calcularLucro);
       });
