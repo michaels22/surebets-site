@@ -138,63 +138,21 @@
       </ul>
     </nav>
   </aside>
-<main>
-  <header>
-    <div>
-      <label for="tipo">Tipo:</label>
-      <select id="tipo"><option value="pre">Pre</option></select>
-      <label><input type="checkbox" checked /> Auto Update</label>
-      <label><input type="checkbox" /> Som De Alerta</label>
-    </div>
-    <button onclick="abrirFiltros()">Filtros</button>
-  </header>
+  <main>
+    <header>
+      <div>
+        <label for="tipo">Tipo:</label>
+        <select id="tipo"><option value="pre">Pre</option></select>
+        <label><input type="checkbox" checked /> Auto Update</label>
+        <label><input type="checkbox" /> Som De Alerta</label>
+      </div>
+      <button onclick="abrirFiltros()">Filtros</button>
+    </header>
 
-  <!-- ABA SUREBETS -->
-  <div id="abaSurebets">
     <div class="surebet" onclick="abrirCalculadora()">
       kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
     </div>
-  </div>
-
-  <!-- ABA REGISTROS -->
-  <div id="abaRegistros" style="display: none;">
-    <h2 style="margin-bottom: 1rem;">Registros</h2>
-    <table style="width: 100%; background-color: #1f1f1f; border-radius: 8px; overflow: hidden;">
-      <thead style="background-color: #00c853; color: #000;">
-        <tr>
-          <th style="padding: 10px;">Data</th>
-          <th>Evento</th>
-          <th>Casa 1</th>
-          <th>Odd 1</th>
-          <th>Casa 2</th>
-          <th>Odd 2</th>
-          <th>Lucro</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="text-align: center;">
-          <td>05/05/2025</td>
-          <td>Time A vs Time B</td>
-          <td>Blaze</td>
-          <td>2.00</td>
-          <td>Bet365</td>
-          <td>2.00</td>
-          <td style="color: #00c853;">+2.5%</td>
-        </tr>
-        <tr style="text-align: center;">
-          <td>04/05/2025</td>
-          <td>Time X vs Time Y</td>
-          <td>Betano</td>
-          <td>2.10</td>
-          <td>Pixbet</td>
-          <td>1.95</td>
-          <td style="color: #00c853;">+1.2%</td>
-        </tr>
-        <!-- Adicione mais registros conforme necessário -->
-      </tbody>
-    </table>
-  </div>
-</main>
+  </main>
 
   <div class="overlay" id="overlay" onclick="fecharModais()"></div>
 
