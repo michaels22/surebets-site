@@ -242,7 +242,7 @@
     });
   </script>
 
-  <!-- Lógica da calculadora -->
+  <!-- Lógica de app -->
   <script>
     function logout() {
       localStorage.removeItem("logado");
@@ -257,6 +257,7 @@
     function abrirCalculadora() {
       document.getElementById('calculadoraModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
+      ativarAutoCalculo();
     }
 
     function fecharModais() {
@@ -272,33 +273,31 @@
     }
 
     function calcularLucro() {
-      const odds = Array.from(document.querySelectorAll('.odd')).map(input => parseFloat(input.value));
+      const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
       const lucros = document.querySelectorAll('.lucro');
       const resultado = document.getElementById('resultado');
 
-      const totalInverse = odds.reduce((acc, odd) => acc + (1 / odd), 0);
+      let totalApostado = 0;
+      let maxLucro = 0;
 
-      if (totalInverse >= 1) {
-        resultado.innerHTML = `<p style="color: red;">Sem arbitragem (surebet)</p>`;
-        return;
+      for (let i = 0; i < odds.length; i++) {
+        const odd = parseFloat(odds[i].value);
+        const valor = parseFloat(valores[i].value);
+        const lucro = (odd * valor - valor).toFixed(2);
+
+        lucros[i].textContent = `R$${lucro}`;
+        totalApostado += valor;
+        if (odd * valor - valor > maxLucro) {
+          maxLucro = odd * valor - valor;
+        }
       }
 
-      const totalInvestido = 100;
-      const stakes = odds.map(odd => (totalInvestido / odd) / totalInverse);
-      const totalRealInvestido = stakes.reduce((acc, v) => acc + v, 0);
-      const ganhosPossiveis = stakes.map((stake, i) => stake * odds[i]);
-      const lucroLiquido = ganhosPossiveis[0] - totalRealInvestido;
-      const percentual = (lucroLiquido / totalRealInvestido) * 100;
-
-      for (let i = 0; i < stakes.length; i++) {
-        valores[i].value = stakes[i].toFixed(2);
-        lucros[i].textContent = `R$${(stakes[i] * odds[i] - totalRealInvestido).toFixed(2)}`;
-      }
+      const porcentagem = ((maxLucro / totalApostado) * 100).toFixed(2);
 
       resultado.innerHTML = `
-        <p>Total apostado: R$${totalRealInvestido.toFixed(2)}</p>
-        <p style="color:#00c853">Lucro garantido: R$${lucroLiquido.toFixed(2)} (${percentual.toFixed(2)}%)</p>
+        <p>Total apostado: R$${totalApostado.toFixed(2)}</p>
+        <p style="color:#00c853">Porcentagem ganha: ${porcentagem}%</p>
       `;
     }
 
@@ -331,6 +330,13 @@
       }
 
       calcularLucro();
+    }
+
+    function ativarAutoCalculo() {
+      const inputs = document.querySelectorAll('.odd, .valor');
+      inputs.forEach(input => {
+        input.addEventListener('input', calcularLucro);
+      });
     }
   </script>
 </body>
