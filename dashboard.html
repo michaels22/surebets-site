@@ -191,11 +191,13 @@
     </table>
     <div id="resultado"></div>
     <br />
+    <button onclick="calcularLucro()">Calcular Lucro</button>
     <button onclick="salvarAposta()">Salvar Aposta</button>
     <button onclick="carregarAposta()">Carregar Aposta</button>
     <button onclick="abrirJanelas()">Abrir todas as casas</button>
   </div>
 
+  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
@@ -240,6 +242,7 @@
     });
   </script>
 
+  <!-- Lógica da calculadora -->
   <script>
     function logout() {
       localStorage.removeItem("logado");
@@ -254,7 +257,6 @@
     function abrirCalculadora() {
       document.getElementById('calculadoraModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
-      calcularLucro(); // força cálculo inicial
     }
 
     function fecharModais() {
@@ -270,49 +272,34 @@
     }
 
     function calcularLucro() {
-      const odds = document.querySelectorAll('.odd');
+      const odds = Array.from(document.querySelectorAll('.odd')).map(input => parseFloat(input.value));
       const valores = document.querySelectorAll('.valor');
       const lucros = document.querySelectorAll('.lucro');
       const resultado = document.getElementById('resultado');
 
-      let totalApostado = 0;
-      let maxLucro = -Infinity;
+      const totalInverse = odds.reduce((acc, odd) => acc + (1 / odd), 0);
 
-      for (let i = 0; i < odds.length; i++) {
-        const odd = parseFloat(odds[i].value);
-        const valor = parseFloat(valores[i].value);
-        const lucro = (odd * valor - totalApostado).toFixed(2);
-
-        lucros[i].textContent = `R$${lucro}`;
-        totalApostado += valor;
+      if (totalInverse >= 1) {
+        resultado.innerHTML = `<p style="color: red;">Sem arbitragem (surebet)</p>`;
+        return;
       }
 
-      const retorno1 = parseFloat(odds[0].value) * parseFloat(valores[0].value);
-      const retorno2 = parseFloat(odds[1].value) * parseFloat(valores[1].value);
-      const melhorRetorno = Math.max(retorno1, retorno2);
-      const lucroFinal = (melhorRetorno - totalApostado).toFixed(2);
-      const porcentagem = ((lucroFinal / totalApostado) * 100).toFixed(2);
+      const totalInvestido = 100;
+      const stakes = odds.map(odd => (totalInvestido / odd) / totalInverse);
+      const totalRealInvestido = stakes.reduce((acc, v) => acc + v, 0);
+      const ganhosPossiveis = stakes.map((stake, i) => stake * odds[i]);
+      const lucroLiquido = ganhosPossiveis[0] - totalRealInvestido;
+      const percentual = (lucroLiquido / totalRealInvestido) * 100;
+
+      for (let i = 0; i < stakes.length; i++) {
+        valores[i].value = stakes[i].toFixed(2);
+        lucros[i].textContent = `R$${(stakes[i] * odds[i] - totalRealInvestido).toFixed(2)}`;
+      }
 
       resultado.innerHTML = `
-        <p>Total apostado: R$${totalApostado.toFixed(2)}</p>
-        <p style="color:#00c853">Lucro garantido: R$${lucroFinal} (${porcentagem}%)</p>
+        <p>Total apostado: R$${totalRealInvestido.toFixed(2)}</p>
+        <p style="color:#00c853">Lucro garantido: R$${lucroLiquido.toFixed(2)} (${percentual.toFixed(2)}%)</p>
       `;
-    }
-
-    function distribuirValores() {
-      const odds = document.querySelectorAll('.odd');
-      const valores = document.querySelectorAll('.valor');
-
-      if (odds.length < 2 || valores.length < 2) return;
-
-      const odd1 = parseFloat(odds[0].value);
-      const odd2 = parseFloat(odds[1].value);
-      const valor1 = parseFloat(valores[0].value);
-      const valor2 = (odd1 * valor1) / odd2;
-
-      valores[1].value = valor2.toFixed(2);
-
-      calcularLucro();
     }
 
     function salvarAposta() {
@@ -345,16 +332,6 @@
 
       calcularLucro();
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.odd, .valor').forEach(input => {
-        input.addEventListener('input', () => {
-          distribuirValores();
-        });
-      });
-
-      distribuirValores();
-    });
   </script>
 </body>
 </html>
