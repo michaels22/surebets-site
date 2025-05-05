@@ -2,174 +2,163 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel de Admin - Betsafe</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Painel Administrativo</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, getDocs, collection, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
+      authDomain: "surebetsadmin.firebaseapp.com",
+      projectId: "surebetsadmin",
+      storageBucket: "surebetsadmin.firebasestorage.app",
+      messagingSenderId: "239373466777",
+      appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const docRef = doc(db, "usuarios", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists() || !docSnap.data().admin) {
+        alert("Acesso negado.");
+        window.location.href = "index.html";
+      } else {
+        carregarUsuarios();
+      }
+    });
+
+    async function criarNovoUsuario() {
+      const email = document.getElementById("novoEmail").value;
+      const senha = document.getElementById("novaSenha").value;
+      const dias = parseInt(document.getElementById("diasRestantes").value);
+      const admin = document.getElementById("ehAdmin").checked;
+
+      if (!email || !senha || isNaN(dias)) {
+        alert("Preencha todos os campos corretamente.");
+        return;
+      }
+
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        const uid = cred.user.uid;
+
+        await setDoc(doc(db, "usuarios", uid), {
+          email: email,
+          diasRestantes: dias,
+          ativo: true,
+          admin: admin
+        });
+
+        alert("Usuário criado com sucesso!");
+        document.getElementById("formulario").reset();
+        carregarUsuarios();
+      } catch (error) {
+        console.error(error);
+        alert("Erro: " + error.message);
+      }
+    }
+
+    async function carregarUsuarios() {
+      const lista = document.getElementById("listaUsuarios");
+      lista.innerHTML = "";
+
+      const querySnapshot = await getDocs(collection(db, "usuarios"));
+      querySnapshot.forEach((docSnap) => {
+        const user = docSnap.data();
+        const uid = docSnap.id;
+
+        const div = document.createElement("div");
+        div.style.marginTop = "20px";
+        div.innerHTML = `
+          <strong>${user.email}</strong><br>
+          Dias restantes: <input type="number" value="${user.diasRestantes}" id="dias-${uid}" style="width:60px;" />
+          Ativo: <input type="checkbox" id="ativo-${uid}" ${user.ativo ? "checked" : ""} />
+          Admin: <input type="checkbox" id="admin-${uid}" ${user.admin ? "checked" : ""} />
+          <button onclick="atualizarUsuario('${uid}')">Salvar</button>
+        `;
+        lista.appendChild(div);
+      });
+    }
+
+    window.criarNovoUsuario = criarNovoUsuario;
+    window.atualizarUsuario = async function(uid) {
+      const dias = parseInt(document.getElementById(`dias-${uid}`).value);
+      const ativo = document.getElementById(`ativo-${uid}`).checked;
+      const admin = document.getElementById(`admin-${uid}`).checked;
+
+      await updateDoc(doc(db, "usuarios", uid), {
+        diasRestantes: dias,
+        ativo: ativo,
+        admin: admin
+      });
+
+      alert("Usuário atualizado com sucesso!");
+    }
+  </script>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0f0f0f;
+      background: #111;
       color: white;
-      margin: 0;
+      font-family: Arial;
       padding: 2rem;
     }
     h1 {
-      color: #00c853;
+      color: #0f0;
     }
-    input, select, button {
-      padding: 0.5rem;
-      margin: 0.25rem;
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, button {
+      padding: 8px;
+      width: 300px;
+      margin-top: 5px;
       border-radius: 5px;
       border: none;
     }
-    input {
-      background: #1a1a1a;
-      color: white;
-    }
     button {
-      background-color: #00c853;
-      color: white;
+      background-color: #0f0;
+      color: #000;
+      margin-top: 15px;
       cursor: pointer;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-    th, td {
-      padding: 0.5rem;
-      text-align: left;
-      border-bottom: 1px solid #444;
-    }
-    tr:hover {
-      background-color: #1f1f1f;
-    }
-    .admin-tag {
-      color: #00e676;
-      font-weight: bold;
-    }
-    .inactive {
-      color: #ff5252;
     }
   </style>
 </head>
 <body>
   <h1>Painel Administrativo</h1>
 
-  <div>
-    <input type="text" id="search" placeholder="Buscar por email...">
-    <button onclick="logout()">Sair</button>
-  </div>
+  <form id="formulario" onsubmit="event.preventDefault(); criarNovoUsuario();">
+    <label for="novoEmail">Email do novo usuário:</label>
+    <input type="email" id="novoEmail" required />
 
-  <table>
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>Dias</th>
-        <th>Ativo</th>
-        <th>Admin</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody id="userTable"></tbody>
-  </table>
+    <label for="novaSenha">Senha:</label>
+    <input type="password" id="novaSenha" required />
 
-  <h2>Adicionar Novo Usuário</h2>
-  <input type="email" id="newEmail" placeholder="Email">
-  <input type="password" id="newSenha" placeholder="Senha">
-  <input type="number" id="newDias" placeholder="Dias Restantes">
-  <label><input type="checkbox" id="newAtivo"> Ativo</label>
-  <label><input type="checkbox" id="newAdmin"> Admin</label>
-  <button onclick="addUser()">Criar Usuário</button>
+    <label for="diasRestantes">Dias restantes:</label>
+    <input type="number" id="diasRestantes" required />
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "surebetsadmin.firebaseapp.com",
-      projectId: "surebetsadmin",
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    <label>
+      <input type="checkbox" id="ehAdmin" />
+      Conceder acesso de administrador
+    </label>
 
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        db.collection("usuarios").doc(user.uid).get().then(doc => {
-          if (doc.exists && doc.data().admin) {
-            loadUsers();
-          } else {
-            alert("Acesso negado. Apenas administradores.");
-            location.href = "index.html";
-          }
-        });
-      } else {
-        location.href = "index.html";
-      }
-    });
+    <button type="submit">Criar Usuário</button>
+  </form>
 
-    function logout() {
-      auth.signOut().then(() => location.href = "index.html");
-    }
+  <hr>
 
-    function loadUsers() {
-      db.collection("usuarios").onSnapshot(snapshot => {
-        const tbody = document.getElementById("userTable");
-        tbody.innerHTML = "";
-        snapshot.docs.forEach(doc => {
-          const user = doc.data();
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${user.email}</td>
-            <td><input type="number" value="${user.diasRestantes}" onchange="updateUser('${doc.id}', 'diasRestantes', this.value)"></td>
-            <td><input type="checkbox" ${user.ativo ? 'checked' : ''} onchange="updateUser('${doc.id}', 'ativo', this.checked)"></td>
-            <td><input type="checkbox" ${user.admin ? 'checked' : ''} onchange="updateUser('${doc.id}', 'admin', this.checked)"></td>
-            <td><button onclick="deleteUser('${doc.id}')">Excluir</button></td>
-          `;
-          tbody.appendChild(tr);
-        });
-      });
-    }
-
-    function updateUser(id, campo, valor) {
-      db.collection("usuarios").doc(id).update({ [campo]: valor });
-    }
-
-    function deleteUser(id) {
-      if (confirm("Tem certeza que deseja excluir?")) {
-        db.collection("usuarios").doc(id).delete();
-      }
-    }
-
-    function addUser() {
-      const email = document.getElementById("newEmail").value;
-      const senha = document.getElementById("newSenha").value;
-      const dias = parseInt(document.getElementById("newDias").value);
-      const ativo = document.getElementById("newAtivo").checked;
-      const admin = document.getElementById("newAdmin").checked;
-
-      auth.createUserWithEmailAndPassword(email, senha).then(cred => {
-        return db.collection("usuarios").doc(cred.user.uid).set({
-          email,
-          diasRestantes: dias,
-          ativo,
-          admin
-        });
-      }).then(() => {
-        alert("Usuário criado com sucesso!");
-      }).catch(err => alert("Erro: " + err.message));
-    }
-
-    document.getElementById("search").addEventListener("input", e => {
-      const filtro = e.target.value.toLowerCase();
-      const rows = document.querySelectorAll("#userTable tr");
-      rows.forEach(row => {
-        const email = row.cells[0].textContent.toLowerCase();
-        row.style.display = email.includes(filtro) ? "" : "none";
-      });
-    });
-  </script>
+  <h2>Usuários Cadastrados</h2>
+  <div id="listaUsuarios"></div>
 </body>
 </html>
