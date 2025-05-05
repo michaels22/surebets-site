@@ -23,6 +23,26 @@
       background-color: #1a1a1a;
       padding: 1rem;
     }
+    aside h2 {
+      color: #00c853;
+      margin-bottom: 1rem;
+    }
+    aside p {
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    aside nav ul {
+      list-style: none;
+    }
+    aside nav ul li {
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    aside nav ul li:hover {
+      color: #00c853;
+    }
     main {
       flex: 1;
       padding: 1rem;
@@ -93,15 +113,15 @@
 <body>
   <aside>
     <h2>Betsafe</h2>
-    <p id="emailUsuario">Carregando...</p>
+    <p>eduarda.brito459@gmail.com</p>
     <nav>
       <ul>
         <li>Surebets</li>
         <li>Registros</li>
         <li>Trocar Senha</li>
         <li>Suporte</li>
-        <li style="cursor: pointer;" onclick="abrirCalculadora()">Calculadora</li>
-        <li style="cursor: pointer;" onclick="logout()">Sair</li>
+        <li onclick="abrirCalculadora()">Calculadora</li>
+        <li onclick="logout()">Sair</li>
       </ul>
     </nav>
   </aside>
@@ -177,18 +197,13 @@
 
   <script>
     // Verificação de login
-    const logado = localStorage.getItem('logado');
-    const email = localStorage.getItem('email');
-    if (logado !== 'true') {
-      window.location.href = 'index.html';
-    } else {
-      document.getElementById("emailUsuario").textContent = email || "Usuário";
+    if (localStorage.getItem("logado") !== "true") {
+      window.location.href = "index.html";
     }
 
     function logout() {
-      localStorage.removeItem('logado');
-      localStorage.removeItem('email');
-      window.location.href = 'index.html';
+      localStorage.removeItem("logado");
+      window.location.href = "index.html";
     }
 
     function abrirFiltros() {
@@ -209,7 +224,6 @@
       window.open('https://bet365.com', '_blank');
       window.open('https://betsafy.com.br/calculadora', '_blank');
     }
-
     function calcularLucro() {
       const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
@@ -238,7 +252,6 @@
         <p style="color:#00c853">Porcentagem ganha: ${porcentagem}%</p>
       `;
     }
-
     function salvarAposta() {
       const aposta = [];
       const odds = document.querySelectorAll('.odd');
@@ -254,7 +267,6 @@
       localStorage.setItem('ultimaAposta', JSON.stringify(aposta));
       alert('Aposta salva com sucesso!');
     }
-
     function carregarAposta() {
       const aposta = JSON.parse(localStorage.getItem('ultimaAposta'));
       if (!aposta) return;
