@@ -60,13 +60,13 @@
     <div class="error" id="erroLogin"></div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script type="module">
-    // Import Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
 
+  <script>
+    // Config Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
       authDomain: "surebetsadmin.firebaseapp.com",
@@ -76,45 +76,45 @@
       appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
     async function logar() {
-      const email = document.getElementById("email").value.trim();
+      const email = document.getElementById("email").value;
       const senha = document.getElementById("senha").value;
       const erro = document.getElementById("erroLogin");
-      erro.textContent = "";
 
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-        const uid = userCredential.user.uid;
+        const userCredential = await auth.signInWithEmailAndPassword(email, senha);
+        const user = userCredential.user;
 
-        const userDocRef = doc(db, "usuarios", uid);
-        const userDoc = await getDoc(userDocRef);
+        const docRef = db.collection("usuarios").doc(user.uid);
+        const doc = await docRef.get();
 
-        if (!userDoc.exists()) {
+        if (!doc.exists) {
           erro.textContent = "Usuário não registrado no sistema.";
+          await auth.signOut();
           return;
         }
 
-        const userData = userDoc.data();
-        if (!userData.ativo) {
-          erro.textContent = "Acesso desativado. Contate o administrador.";
+        const dados = doc.data();
+
+        if (!dados.ativo) {
+          erro.textContent = "Seu acesso está desativado.";
+          await auth.signOut();
           return;
         }
 
         localStorage.setItem("logado", "true");
-        localStorage.setItem("email", email);
-        window.location.href = "dashboard.html";
 
-      } catch (e) {
-        if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
-          erro.textContent = "Email ou senha incorretos.";
+        if (dados.admin === true) {
+          window.location.href = "painel.html"; // painel administrativo
         } else {
-          erro.textContent = "Erro ao fazer login. Tente novamente.";
-          console.error(e);
+          window.location.href = "dashboard.html"; // usuário normal
         }
+      } catch (e) {
+        erro.textContent = "Email ou senha incorretos.";
       }
     }
   </script>
