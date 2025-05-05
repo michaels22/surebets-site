@@ -93,7 +93,7 @@
 <body>
   <aside>
     <h2>Betsafe</h2>
-    <p>eduarda.brito459@gmail.com</p>
+    <p id="emailUsuario">Carregando...</p>
     <nav>
       <ul>
         <li>Surebets</li>
@@ -101,6 +101,7 @@
         <li>Trocar Senha</li>
         <li>Suporte</li>
         <li style="cursor: pointer;" onclick="abrirCalculadora()">Calculadora</li>
+        <li style="cursor: pointer;" onclick="logout()">Sair</li>
       </ul>
     </nav>
   </aside>
@@ -118,7 +119,6 @@
     <div class="surebet" onclick="abrirCalculadora()">
       kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
     </div>
-
   </main>
 
   <div class="overlay" id="overlay" onclick="fecharModais()"></div>
@@ -176,6 +176,21 @@
   </div>
 
   <script>
+    // Verificação de login
+    const logado = localStorage.getItem('logado');
+    const email = localStorage.getItem('email');
+    if (logado !== 'true') {
+      window.location.href = 'index.html';
+    } else {
+      document.getElementById("emailUsuario").textContent = email || "Usuário";
+    }
+
+    function logout() {
+      localStorage.removeItem('logado');
+      localStorage.removeItem('email');
+      window.location.href = 'index.html';
+    }
+
     function abrirFiltros() {
       document.getElementById('filtrosModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
@@ -226,7 +241,6 @@
 
     function salvarAposta() {
       const aposta = [];
-
       const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
 
