@@ -1,3 +1,4 @@
+<!-- CÓDIGO COMPLETO -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,109 +7,35 @@
   <title>Betsafe Surebets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-    body {
-      display: flex;
-      height: 100vh;
-      background-color: #0f0f0f;
-      color: white;
-    }
-    aside {
-      width: 250px;
-      background-color: #1a1a1a;
-      padding: 1rem;
-    }
-    aside h2 {
-      color: #00c853;
-      margin-bottom: 1rem;
-    }
-    aside p {
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    aside nav ul {
-      list-style: none;
-      margin-top: 1rem;
-    }
-    aside nav ul li {
-      margin: 1rem 0;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    aside nav ul li:hover {
-      color: #00c853;
-    }
-    main {
-      flex: 1;
-      padding: 1rem;
-      background-color: #121212;
-      overflow-y: auto;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .surebet {
-      background: #1f1f1f;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { display: flex; height: 100vh; background-color: #0f0f0f; color: white; }
+    aside { width: 250px; background-color: #1a1a1a; padding: 1rem; }
+    aside h2 { color: #00c853; margin-bottom: 1rem; }
+    aside p { margin-bottom: 0.5rem; font-size: 0.9rem; color: #ccc; }
+    aside nav ul { list-style: none; margin-top: 1rem; }
+    aside nav ul li { margin: 1rem 0; cursor: pointer; transition: color 0.3s; }
+    aside nav ul li:hover { color: #00c853; }
+    main { flex: 1; padding: 1rem; background-color: #121212; overflow-y: auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .surebet { background: #1f1f1f; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; cursor: pointer; }
     .filtros-modal, .calculadora-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      padding: 2rem;
-      border-radius: 10px;
-      z-index: 1000;
-      display: none;
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: #222; padding: 2rem; border-radius: 10px; z-index: 1000; display: none;
     }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      z-index: 999;
+    .modal-header { display: flex; justify-content: space-between; align-items: center; }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); display: none; z-index: 999;
     }
     button {
-      background-color: #00c853;
-      border: none;
-      padding: 0.5rem 1rem;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-right: 5px;
+      background-color: #00c853; border: none; padding: 0.5rem 1rem;
+      color: white; border-radius: 5px; cursor: pointer; margin-right: 5px;
     }
-    .input-group {
-      margin: 1rem 0;
-    }
+    .input-group { margin: 1rem 0; }
     input[type="number"] {
-      width: 60px;
-      padding: 4px;
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
+      width: 60px; padding: 4px; background: #333; color: white;
+      border: none; border-radius: 5px;
     }
-    td input {
-      width: 70px;
-    }
+    td input { width: 70px; }
   </style>
 </head>
 <body>
@@ -127,6 +54,7 @@
       </ul>
     </nav>
   </aside>
+
   <main>
     <header>
       <div>
@@ -242,7 +170,7 @@
     });
   </script>
 
-  <!-- Lógica de app -->
+  <!-- Lógica JS -->
   <script>
     function logout() {
       localStorage.removeItem("logado");
@@ -267,6 +195,7 @@
       window.open('https://bet365.com', '_blank');
       window.open('https://betsafy.com.br/calculadora', '_blank');
     }
+
     function calcularLucro() {
       const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
