@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard - Betsafe Surebets</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <title>Betsafe Surebets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -22,31 +22,6 @@
       width: 250px;
       background-color: #1a1a1a;
       padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .logo {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-    }
-    .user-info {
-      font-size: 0.9rem;
-      margin-bottom: 2rem;
-      color: #ccc;
-    }
-    nav ul {
-      list-style: none;
-    }
-    nav li {
-      margin: 0.5rem 0;
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 5px;
-    }
-    nav li:hover {
-      background-color: #333;
     }
     main {
       flex: 1;
@@ -67,6 +42,29 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    .filtros-modal, .calculadora-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      padding: 2rem;
+      border-radius: 10px;
+      z-index: 1000;
+      display: none;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 999;
+    }
     button {
       background-color: #00c853;
       border: none;
@@ -74,50 +72,43 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
+      margin-right: 5px;
     }
-    .logout {
-      margin-top: 2rem;
-      color: #888;
-      font-size: 0.8rem;
-      cursor: pointer;
+    .input-group {
+      margin: 1rem 0;
     }
-    .logout:hover {
-      color: #ccc;
+    input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    td input {
+      width: 70px;
     }
   </style>
-  <script>
-    // Proteção do dashboard
-    if (localStorage.getItem('logado') !== 'sim') {
-      window.location.href = 'index.html';
-    }
-    function logout() {
-      localStorage.removeItem('logado');
-      window.location.href = 'index.html';
-    }
-  </script>
 </head>
 <body>
   <aside>
-    <div>
-      <div class="logo">Betsafe</div>
-      <div class="user-info">admin@betsafe.com</div>
-      <nav>
-        <ul>
-          <li onclick="location.href='surebets.html'">Surebets</li>
-          <li onclick="location.href='registros.html'">Registros</li>
-          <li onclick="location.href='trocar-senha.html'">Trocar Senha</li>
-          <li onclick="location.href='suporte.html'">Suporte</li>
-          <li onclick="location.href='calculadora.html'">Calculadora</li>
-        </ul>
-      </nav>
-    </div>
-    <div class="logout" onclick="logout()">Sair</div>
+    <h2>Betsafe</h2>
+    <p>eduarda.brito459@gmail.com</p>
+    <nav>
+      <ul>
+        <li>Surebets</li>
+        <li>Registros</li>
+        <li>Trocar Senha</li>
+        <li>Suporte</li>
+        <li style="cursor: pointer;" onclick="abrirCalculadora()">Calculadora</li>
+      </ul>
+    </nav>
   </aside>
   <main>
     <header>
       <div>
         <label for="tipo">Tipo:</label>
-        <select id="tipo"><option value="pre">Pré</option></select>
+        <select id="tipo"><option value="pre">Pre</option></select>
         <label><input type="checkbox" checked /> Auto Update</label>
         <label><input type="checkbox" /> Som De Alerta</label>
       </div>
@@ -127,6 +118,143 @@
     <div class="surebet" onclick="abrirCalculadora()">
       kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
     </div>
+
   </main>
+
+  <div class="overlay" id="overlay" onclick="fecharModais()"></div>
+
+  <div class="filtros-modal" id="filtrosModal">
+    <div class="modal-header">
+      <h3>Filtros</h3>
+      <button onclick="fecharModais()">X</button>
+    </div>
+    <div class="input-group">
+      <label>Porcentagem de ARBS</label>
+      <input type="number" value="0" /> a 
+      <input type="number" value="1000" /> %
+    </div>
+    <div class="input-group">
+      <label>Selecione as casas</label>
+      <select><option>Bet365</option></select>
+    </div>
+    <div class="input-group">
+      <label>Selecione os esportes</label>
+      <select><option>MLB</option></select>
+    </div>
+    <button onclick="fecharModais()">Salvar</button>
+  </div>
+
+  <div class="calculadora-modal" id="calculadoraModal">
+    <div class="modal-header">
+      <h3>Calculadora</h3>
+      <button onclick="fecharModais()">X</button>
+    </div>
+    <p>kc royals - chi white sox</p>
+    <table>
+      <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
+      <tr>
+        <td>McGames</td>
+        <td>Mais de (4.5)</td>
+        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+        <td><input type="number" class="valor" value="50" /></td>
+        <td class="lucro">R$0</td>
+      </tr>
+      <tr>
+        <td>Bet365</td>
+        <td>Menos de (4.5)</td>
+        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+        <td><input type="number" class="valor" value="50" /></td>
+        <td class="lucro">R$0</td>
+      </tr>
+    </table>
+    <div id="resultado"></div>
+    <br />
+    <button onclick="calcularLucro()">Calcular Lucro</button>
+    <button onclick="salvarAposta()">Salvar Aposta</button>
+    <button onclick="carregarAposta()">Carregar Aposta</button>
+    <button onclick="abrirJanelas()">Abrir todas as casas</button>
+  </div>
+
+  <script>
+    function abrirFiltros() {
+      document.getElementById('filtrosModal').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+    function abrirCalculadora() {
+      document.getElementById('calculadoraModal').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+    function fecharModais() {
+      document.getElementById('filtrosModal').style.display = 'none';
+      document.getElementById('calculadoraModal').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+    function abrirJanelas() {
+      window.open('https://blaze.bet.br', '_blank');
+      window.open('https://bet365.com', '_blank');
+      window.open('https://betsafy.com.br/calculadora', '_blank');
+    }
+
+    function calcularLucro() {
+      const odds = document.querySelectorAll('.odd');
+      const valores = document.querySelectorAll('.valor');
+      const lucros = document.querySelectorAll('.lucro');
+      const resultado = document.getElementById('resultado');
+
+      let totalApostado = 0;
+      let maxLucro = 0;
+
+      for (let i = 0; i < odds.length; i++) {
+        const odd = parseFloat(odds[i].value);
+        const valor = parseFloat(valores[i].value);
+        const lucro = (odd * valor - valor).toFixed(2);
+
+        lucros[i].textContent = `R$${lucro}`;
+        totalApostado += valor;
+        if (odd * valor - valor > maxLucro) {
+          maxLucro = odd * valor - valor;
+        }
+      }
+
+      const porcentagem = ((maxLucro / totalApostado) * 100).toFixed(2);
+
+      resultado.innerHTML = `
+        <p>Total apostado: R$${totalApostado.toFixed(2)}</p>
+        <p style="color:#00c853">Porcentagem ganha: ${porcentagem}%</p>
+      `;
+    }
+
+    function salvarAposta() {
+      const aposta = [];
+
+      const odds = document.querySelectorAll('.odd');
+      const valores = document.querySelectorAll('.valor');
+
+      for (let i = 0; i < odds.length; i++) {
+        aposta.push({
+          odd: odds[i].value,
+          valor: valores[i].value
+        });
+      }
+
+      localStorage.setItem('ultimaAposta', JSON.stringify(aposta));
+      alert('Aposta salva com sucesso!');
+    }
+
+    function carregarAposta() {
+      const aposta = JSON.parse(localStorage.getItem('ultimaAposta'));
+      if (!aposta) return;
+
+      const odds = document.querySelectorAll('.odd');
+      const valores = document.querySelectorAll('.valor');
+
+      for (let i = 0; i < aposta.length; i++) {
+        odds[i].value = aposta[i].odd;
+        valores[i].value = aposta[i].valor;
+      }
+
+      calcularLucro();
+    }
+  </script>
 </body>
 </html>
