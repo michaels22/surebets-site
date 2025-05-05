@@ -17,6 +17,7 @@
       height: 100vh;
       background-color: #0f0f0f;
       color: white;
+      overflow: hidden;
     }
     aside {
       width: 250px;
@@ -49,6 +50,7 @@
       padding: 1rem;
       background-color: #121212;
       overflow-y: auto;
+      color: white;
     }
     header {
       display: flex;
@@ -73,14 +75,12 @@
       border-radius: 10px;
       z-index: 1000;
       display: none;
-      max-width: 90%;
-      width: 600px;
+      color: white;
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1rem;
     }
     .overlay {
       position: fixed;
@@ -102,66 +102,88 @@
       margin: 1rem 0;
     }
     input[type="number"] {
-      width: 80px;
-      padding: 5px;
+      width: 70px;
+      padding: 4px;
       background: #333;
       color: white;
       border: none;
       border-radius: 5px;
     }
+    td input {
+      width: 70px;
+    }
     table {
       width: 100%;
-      border-collapse: collapse;
       margin-top: 1rem;
     }
     th, td {
-      padding: 10px;
+      padding: 6px;
       text-align: center;
-    }
-    th {
-      background-color: #333;
-    }
-    tr:nth-child(even) {
-      background-color: #1b1b1b;
-    }
-    tr:nth-child(odd) {
-      background-color: #2a2a2a;
-    }
-    .lucro {
-      font-weight: bold;
-    }
-    .lucro.positivo {
-      color: #00c853;
-    }
-    .lucro.negativo {
-      color: #ff5252;
-    }
-    #resultado {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid #444;
-    }
-    #resultado p {
-      font-size: 1rem;
     }
   </style>
 </head>
 <body>
-  <!-- conteúdo do <aside> e <main> permanece igual -->
-  <!-- ... OMITIDO para foco na calculadora ... -->
+  <aside>
+    <h2>Betsafe</h2>
+    <p id="userEmail">Carregando...</p>
+    <p id="diasRestantes">Dias restantes: ...</p>
+    <nav>
+      <ul>
+        <li>Surebets</li>
+        <li>Registros</li>
+        <li>Trocar Senha</li>
+        <li>Suporte</li>
+        <li onclick="abrirCalculadora()">Calculadora</li>
+        <li onclick="logout()">Sair</li>
+      </ul>
+    </nav>
+  </aside>
+  <main>
+    <header>
+      <div>
+        <label for="tipo">Tipo:</label>
+        <select id="tipo"><option value="pre">Pre</option></select>
+        <label><input type="checkbox" checked /> Auto Update</label>
+        <label><input type="checkbox" /> Som De Alerta</label>
+      </div>
+      <button onclick="abrirFiltros()">Filtros</button>
+    </header>
+
+    <div class="surebet" onclick="abrirCalculadora()">
+      kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
+    </div>
+  </main>
+
+  <div class="overlay" id="overlay" onclick="fecharModais()"></div>
+
+  <div class="filtros-modal" id="filtrosModal">
+    <div class="modal-header">
+      <h3>Filtros</h3>
+      <button onclick="fecharModais()">X</button>
+    </div>
+    <div class="input-group">
+      <label>Porcentagem de ARBS</label>
+      <input type="number" value="0" /> a 
+      <input type="number" value="1000" /> %
+    </div>
+    <div class="input-group">
+      <label>Selecione as casas</label>
+      <select><option>Bet365</option></select>
+    </div>
+    <div class="input-group">
+      <label>Selecione os esportes</label>
+      <select><option>MLB</option></select>
+    </div>
+    <button onclick="fecharModais()">Salvar</button>
+  </div>
 
   <div class="calculadora-modal" id="calculadoraModal">
     <div class="modal-header">
       <h3>Calculadora</h3>
       <button onclick="fecharModais()">X</button>
     </div>
-    <p><strong>kc royals - chi white sox</strong></p>
-    <div class="input-group">
-      <label>Valor total a investir:</label>
-      <input type="number" id="valorTotalInvestido" placeholder="Opcional" />
-    </div>
+    <p>kc royals - chi white sox</p>
+
     <table>
       <thead>
         <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
@@ -184,9 +206,13 @@
       </tbody>
     </table>
 
-    <div id="resultado">
-      <p id="totalInvestidoTexto">Total investido: R$0</p>
-      <p id="porcentagemLucro">0%</p>
+    <div id="resultado" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+      <div style="display: flex; align-items: center;">
+        <strong style="color: #00c853; margin-right: 8px;">Total investido:</strong>
+        <span id="totalInvestidoTexto">R$0.00</span>
+        <input type="number" id="valorTotalInvestido" placeholder="Total" style="margin-left: 10px;" />
+      </div>
+      <strong id="porcentagemLucro" style="color:#00c853;">0%</strong>
     </div>
 
     <br />
@@ -203,18 +229,15 @@
       document.getElementById('filtrosModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
     }
-
     function abrirCalculadora() {
       document.getElementById('calculadoraModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
     }
-
     function fecharModais() {
       document.getElementById('filtrosModal').style.display = 'none';
       document.getElementById('calculadoraModal').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
     }
-
     function abrirJanelas() {
       window.open('https://blaze.bet.br', '_blank');
       window.open('https://bet365.com', '_blank');
@@ -240,7 +263,8 @@
         valores[0].value = valor1.toFixed(2);
         valores[1].value = valor2.toFixed(2);
       } else {
-        valor1 = parseFloat(valores[0].value) || 0;
+        valor1 = parseFloat(valores[0].value);
+        if (isNaN(valor1)) valor1 = 0;
         valor2 = (valor1 * odd1) / odd2;
         valores[1].value = valor2.toFixed(2);
         totalInvestido = valor1 + valor2;
@@ -251,17 +275,13 @@
       lucros[0].textContent = `R$${lucro1}`;
       lucros[1].textContent = `R$${lucro2}`;
 
-      lucros[0].classList.toggle('positivo', lucro1 > 0);
-      lucros[0].classList.toggle('negativo', lucro1 <= 0);
-      lucros[1].classList.toggle('positivo', lucro2 > 0);
-      lucros[1].classList.toggle('negativo', lucro2 <= 0);
-
       const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
-      totalInvestidoTexto.textContent = `Total investido: R$${totalInvestido.toFixed(2)}`;
+      totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
       porcentagemLucro.textContent = `${porcentagem}%`;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      console.log("Página carregada");
       document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
         el.addEventListener('input', calcularLucro);
       });
