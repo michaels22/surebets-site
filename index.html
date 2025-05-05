@@ -60,62 +60,40 @@
     <div class="error" id="erroLogin"></div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js"></script>
 
   <script>
-    // Config Firebase
+    // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
       authDomain: "surebetsadmin.firebaseapp.com",
       projectId: "surebetsadmin",
-      storageBucket: "surebetsadmin.firebasestorage.app",
+      storageBucket: "surebetsadmin.appspot.com",
       messagingSenderId: "239373466777",
       appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    // Inicialização do Firebase
+    const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    async function logar() {
+    function logar() {
       const email = document.getElementById("email").value;
       const senha = document.getElementById("senha").value;
       const erro = document.getElementById("erroLogin");
 
-      try {
-        const userCredential = await auth.signInWithEmailAndPassword(email, senha);
-        const user = userCredential.user;
-
-        const docRef = db.collection("usuarios").doc(user.uid);
-        const doc = await docRef.get();
-
-        if (!doc.exists) {
-          erro.textContent = "Usuário não registrado no sistema.";
-          await auth.signOut();
-          return;
-        }
-
-        const dados = doc.data();
-
-        if (!dados.ativo) {
-          erro.textContent = "Seu acesso está desativado.";
-          await auth.signOut();
-          return;
-        }
-
-        localStorage.setItem("logado", "true");
-
-        if (dados.admin === true) {
-          window.location.href = "painel.html"; // painel administrativo
-        } else {
-          window.location.href = "dashboard.html"; // usuário normal
-        }
-      } catch (e) {
-        erro.textContent = "Email ou senha incorretos.";
-      }
+      auth.signInWithEmailAndPassword(email, senha)
+        .then((userCredential) => {
+          localStorage.setItem("logado", "true");
+          localStorage.setItem("email", email);
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          console.error(error);
+          erro.textContent = "Email ou senha incorretos.";
+        });
     }
   </script>
 </body>
