@@ -200,7 +200,7 @@
   <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -227,6 +227,7 @@
       const userDoc = await getDoc(doc(db, "usuarios", user.uid));
       if (!userDoc.exists()) {
         alert("Usuário não encontrado.");
+        signOut(auth);
         window.location.href = "index.html";
         return;
       }
@@ -234,21 +235,23 @@
       const dados = userDoc.data();
       if (!dados.ativo || (dados.diasRestantes ?? 0) <= 0) {
         alert("Acesso negado. Usuário inativo ou sem dias restantes.");
+        signOut(auth);
         window.location.href = "index.html";
         return;
       }
 
       document.getElementById("diasRestantes").textContent = `Dias restantes: ${dados.diasRestantes ?? 0}`;
     });
+
+    window.logout = () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    };
   </script>
 
   <!-- Lógica de app -->
   <script>
-    function logout() {
-      localStorage.removeItem("logado");
-      window.location.href = "index.html";
-    }
-
     function abrirFiltros() {
       document.getElementById('filtrosModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
