@@ -1,259 +1,73 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Betsafe Surebets</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Betsafe Surebets</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
     body {
-      display: flex;
-      height: 100vh;
-      background-color: #0f0f0f;
-      color: white;
-    }
-    aside {
-      width: 250px;
-      background-color: #1a1a1a;
-      padding: 1rem;
-    }
-    main {
-      flex: 1;
-      padding: 1rem;
       background-color: #121212;
-      overflow-y: auto;
-    }
-    header {
+      color: white;
+      font-family: 'Inter', sans-serif;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      margin-bottom: 1rem;
+      height: 100vh;
     }
-    .surebet {
-      background: #1f1f1f;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .filtros-modal, .calculadora-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
+    .login-container {
+      background-color: #1e1e1e;
       padding: 2rem;
       border-radius: 10px;
-      z-index: 1000;
-      display: none;
+      width: 300px;
     }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
     }
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      z-index: 999;
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: none;
     }
     button {
+      width: 100%;
+      padding: 0.5rem;
       background-color: #00c853;
       border: none;
-      padding: 0.5rem 1rem;
       color: white;
       border-radius: 5px;
       cursor: pointer;
-      margin-right: 5px;
-    }
-    .input-group {
-      margin: 1rem 0;
-    }
-    input[type="number"] {
-      width: 60px;
-      padding: 4px;
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    td input {
-      width: 70px;
     }
   </style>
 </head>
 <body>
-  <aside>
-    <h2>Betsafe</h2>
-    <p>eduarda.brito459@gmail.com</p>
-    <nav>
-      <ul>
-        <li>Surebets</li>
-        <li>Registros</li>
-        <li>Trocar Senha</li>
-        <li>Suporte</li>
-        <li style="cursor: pointer;" onclick="abrirCalculadora()">Calculadora</li>
-      </ul>
-    </nav>
-  </aside>
-  <main>
-    <header>
-      <div>
-        <label for="tipo">Tipo:</label>
-        <select id="tipo"><option value="pre">Pre</option></select>
-        <label><input type="checkbox" checked /> Auto Update</label>
-        <label><input type="checkbox" /> Som De Alerta</label>
-      </div>
-      <button onclick="abrirFiltros()">Filtros</button>
-    </header>
-
-    <div class="surebet" onclick="abrirCalculadora()">
-      kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
-    </div>
-
-  </main>
-
-  <div class="overlay" id="overlay" onclick="fecharModais()"></div>
-
-  <div class="filtros-modal" id="filtrosModal">
-    <div class="modal-header">
-      <h3>Filtros</h3>
-      <button onclick="fecharModais()">X</button>
-    </div>
-    <div class="input-group">
-      <label>Porcentagem de ARBS</label>
-      <input type="number" value="0" /> a 
-      <input type="number" value="1000" /> %
-    </div>
-    <div class="input-group">
-      <label>Selecione as casas</label>
-      <select><option>Bet365</option></select>
-    </div>
-    <div class="input-group">
-      <label>Selecione os esportes</label>
-      <select><option>MLB</option></select>
-    </div>
-    <button onclick="fecharModais()">Salvar</button>
-  </div>
-
-  <div class="calculadora-modal" id="calculadoraModal">
-    <div class="modal-header">
-      <h3>Calculadora</h3>
-      <button onclick="fecharModais()">X</button>
-    </div>
-    <p>kc royals - chi white sox</p>
-    <table>
-      <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
-      <tr>
-        <td>McGames</td>
-        <td>Mais de (4.5)</td>
-        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-        <td><input type="number" class="valor" value="50" /></td>
-        <td class="lucro">R$0</td>
-      </tr>
-      <tr>
-        <td>Bet365</td>
-        <td>Menos de (4.5)</td>
-        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-        <td><input type="number" class="valor" value="50" /></td>
-        <td class="lucro">R$0</td>
-      </tr>
-    </table>
-    <div id="resultado"></div>
-    <br />
-    <button onclick="calcularLucro()">Calcular Lucro</button>
-    <button onclick="salvarAposta()">Salvar Aposta</button>
-    <button onclick="carregarAposta()">Carregar Aposta</button>
-    <button onclick="abrirJanelas()">Abrir todas as casas</button>
+  <div class="login-container">
+    <h2>Login</h2>
+    <input type="text" id="usuario" placeholder="Usuário" />
+    <input type="password" id="senha" placeholder="Senha" />
+    <button onclick="verificarLogin()">Entrar</button>
   </div>
 
   <script>
-    function abrirFiltros() {
-      document.getElementById('filtrosModal').style.display = 'block';
-      document.getElementById('overlay').style.display = 'block';
-    }
-    function abrirCalculadora() {
-      document.getElementById('calculadoraModal').style.display = 'block';
-      document.getElementById('overlay').style.display = 'block';
-    }
-    function fecharModais() {
-      document.getElementById('filtrosModal').style.display = 'none';
-      document.getElementById('calculadoraModal').style.display = 'none';
-      document.getElementById('overlay').style.display = 'none';
-    }
-    function abrirJanelas() {
-      window.open('https://blaze.bet.br', '_blank');
-      window.open('https://bet365.com', '_blank');
-      window.open('https://betsafy.com.br/calculadora', '_blank');
-    }
+    const usuarios = {
+      "admin": "1234",
+      "eduarda": "5678",
+      "joao": "abcd"
+    };
 
-    function calcularLucro() {
-      const odds = document.querySelectorAll('.odd');
-      const valores = document.querySelectorAll('.valor');
-      const lucros = document.querySelectorAll('.lucro');
-      const resultado = document.getElementById('resultado');
+    function verificarLogin() {
+      const user = document.getElementById('usuario').value;
+      const pass = document.getElementById('senha').value;
 
-      let totalApostado = 0;
-      let maxLucro = 0;
-
-      for (let i = 0; i < odds.length; i++) {
-        const odd = parseFloat(odds[i].value);
-        const valor = parseFloat(valores[i].value);
-        const lucro = (odd * valor - valor).toFixed(2);
-
-        lucros[i].textContent = `R$${lucro}`;
-        totalApostado += valor;
-        if (odd * valor - valor > maxLucro) {
-          maxLucro = odd * valor - valor;
-        }
+      if (usuarios[user] && usuarios[user] === pass) {
+        localStorage.setItem('logado', 'true');
+        window.location.href = "dashboard.html";
+      } else {
+        alert('Usuário ou senha inválidos');
       }
-
-      const porcentagem = ((maxLucro / totalApostado) * 100).toFixed(2);
-
-      resultado.innerHTML = `
-        <p>Total apostado: R$${totalApostado.toFixed(2)}</p>
-        <p style="color:#00c853">Porcentagem ganha: ${porcentagem}%</p>
-      `;
-    }
-
-    function salvarAposta() {
-      const aposta = [];
-
-      const odds = document.querySelectorAll('.odd');
-      const valores = document.querySelectorAll('.valor');
-
-      for (let i = 0; i < odds.length; i++) {
-        aposta.push({
-          odd: odds[i].value,
-          valor: valores[i].value
-        });
-      }
-
-      localStorage.setItem('ultimaAposta', JSON.stringify(aposta));
-      alert('Aposta salva com sucesso!');
-    }
-
-    function carregarAposta() {
-      const aposta = JSON.parse(localStorage.getItem('ultimaAposta'));
-      if (!aposta) return;
-
-      const odds = document.querySelectorAll('.odd');
-      const valores = document.querySelectorAll('.valor');
-
-      for (let i = 0; i < aposta.length; i++) {
-        odds[i].value = aposta[i].odd;
-        valores[i].value = aposta[i].valor;
-      }
-
-      calcularLucro();
     }
   </script>
 </body>
