@@ -60,12 +60,10 @@
     <div class="error" id="erroLogin"></div>
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 
-  <script>
-    // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
       authDomain: "surebetsadmin.firebaseapp.com",
@@ -75,16 +73,15 @@
       appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
     };
 
-    // Inicialização do Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    function logar() {
+    window.logar = function() {
       const email = document.getElementById("email").value;
       const senha = document.getElementById("senha").value;
       const erro = document.getElementById("erroLogin");
 
-      auth.signInWithEmailAndPassword(email, senha)
+      signInWithEmailAndPassword(auth, email, senha)
         .then((userCredential) => {
           localStorage.setItem("logado", "true");
           localStorage.setItem("email", email);
@@ -94,7 +91,7 @@
           console.error(error);
           erro.textContent = "Email ou senha incorretos.";
         });
-    }
+    };
   </script>
 </body>
 </html>
