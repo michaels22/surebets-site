@@ -120,6 +120,19 @@
       padding: 6px;
       text-align: center;
     }
+    /* Estilo adicional para tabela de registros */
+    #abaRegistros table {
+      background-color: #1f1f1f;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    #abaRegistros thead {
+      background-color: #00c853;
+      color: #000;
+    }
+    #abaRegistros td {
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
@@ -129,8 +142,8 @@
     <p id="diasRestantes">Dias restantes: ...</p>
     <nav>
       <ul>
-        <li>Surebets</li>
-        <li>Registros</li>
+        <li id="menuSurebets">Surebets</li>
+        <li id="menuRegistros">Registros</li>
         <li>Trocar Senha</li>
         <li>Suporte</li>
         <li onclick="abrirCalculadora()">Calculadora</li>
@@ -149,8 +162,49 @@
       <button onclick="abrirFiltros()">Filtros</button>
     </header>
 
-    <div class="surebet" onclick="abrirCalculadora()">
-      kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
+    <!-- ABA SUREBETS -->
+    <div id="abaSurebets">
+      <div class="surebet" onclick="abrirCalculadora()">
+        kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
+      </div>
+    </div>
+
+    <!-- ABA REGISTROS -->
+    <div id="abaRegistros" style="display: none;">
+      <h2 style="margin-bottom: 1rem;">Registros</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Evento</th>
+            <th>Casa 1</th>
+            <th>Odd 1</th>
+            <th>Casa 2</th>
+            <th>Odd 2</th>
+            <th>Lucro</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>05/05/2025</td>
+            <td>Time A vs Time B</td>
+            <td>Blaze</td>
+            <td>2.00</td>
+            <td>Bet365</td>
+            <td>2.00</td>
+            <td style="color: #00c853;">+2.5%</td>
+          </tr>
+          <tr>
+            <td>04/05/2025</td>
+            <td>Time X vs Time Y</td>
+            <td>Betano</td>
+            <td>2.10</td>
+            <td>Pixbet</td>
+            <td>1.95</td>
+            <td style="color: #00c853;">+1.2%</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </main>
 
@@ -183,7 +237,6 @@
       <button onclick="fecharModais()">X</button>
     </div>
     <p>kc royals - chi white sox</p>
-
     <table>
       <thead>
         <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
@@ -205,7 +258,6 @@
         </tr>
       </tbody>
     </table>
-
     <div id="resultado" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
       <div style="display: flex; align-items: center;">
         <strong style="color: #00c853; margin-right: 8px;">Total investido:</strong>
@@ -214,7 +266,6 @@
       </div>
       <strong id="porcentagemLucro" style="color:#00c853;">0%</strong>
     </div>
-
     <br />
     <button onclick="abrirJanelas()">Abrir todas as casas</button>
   </div>
@@ -229,15 +280,18 @@
       document.getElementById('filtrosModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
     }
+
     function abrirCalculadora() {
       document.getElementById('calculadoraModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
     }
+
     function fecharModais() {
       document.getElementById('filtrosModal').style.display = 'none';
       document.getElementById('calculadoraModal').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
     }
+
     function abrirJanelas() {
       window.open('https://blaze.bet.br', '_blank');
       window.open('https://bet365.com', '_blank');
@@ -284,6 +338,16 @@
       console.log("Página carregada");
       document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
         el.addEventListener('input', calcularLucro);
+      });
+
+      document.getElementById("menuSurebets").addEventListener("click", () => {
+        document.getElementById("abaSurebets").style.display = "block";
+        document.getElementById("abaRegistros").style.display = "none";
+      });
+
+      document.getElementById("menuRegistros").addEventListener("click", () => {
+        document.getElementById("abaSurebets").style.display = "none";
+        document.getElementById("abaRegistros").style.display = "block";
       });
     });
   </script>
