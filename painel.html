@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel Admin - Betsafe</title>
+  <script type="module">
+    // Importar SDKs do Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, addDoc, updateDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getAuth, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRHHNVflI9KqCNETeNuPpz75RUJCeF0lM",
+      authDomain: "surebetsadmin.firebaseapp.com",
+      projectId: "surebetsadmin",
+      storageBucket: "surebetsadmin.appspot.com",
+      messagingSenderId: "239373466777",
+      appId: "1:239373466777:web:ccd8fbbf4278df3a748c08"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const userList = document.getElementById("userList");
+    const addUserForm = document.getElementById("addUserForm");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDocs(collection(db, "usuarios"));
+        let isAdmin = false;
+        userDoc.forEach(docu => {
+          if (docu.id === user.uid && docu.data().admin === true) {
+            isAdmin = true;
+          }
+        });
+        if (!isAdmin) {
+          alert("Acesso negado: apenas administradores.");
+          window.location.href = "index.html";
+        } else {
+          loadUsers();
+        }
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    async function loadUsers() {
+      userList.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "usuarios"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <strong>${data.email}</strong><br>
+          Ativo: <input type="checkbox" ${data.ativo ? "checked" : ""} onchange="updateField('${docSnap.id}', 'ativo', this.checked)">
+          Admin: <input type="checkbox" ${data.admin ? "checked" : ""} onchange="updateField('${docSnap.id}', 'admin', this.checked)">
+          Dias restantes: <input type="number" value="${data.diasRestantes}" onchange="updateField('${docSnap.id}', 'diasRestantes', this.value)">
+          <hr>
+        `;
+        userList.appendChild(div);
+      });
+    }
+
+    window.updateField = async (id, field, value) => {
+      const userRef = doc(db, "usuarios", id);
+      await updateDoc(userRef, { [field]: field === "diasRestantes" ? Number(value) : value });
+      alert("Atualizado!");
+    };
+
+    addUserForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = e.target.email.value;
+      const ativo = e.target.ativo.checked;
+      const admin = e.target.admin.checked;
+      const dias = Number(e.target.dias.value);
+
+      await addDoc(collection(db, "usuarios"), {
+        email, ativo, admin, diasRestantes: dias
+      });
+
+      e.target.reset();
+      alert("Usuário adicionado!");
+      loadUsers();
+    });
+
+    window.logout = async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    };
+  </script>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      padding: 2rem;
+    }
+    input, button {
+      margin: 0.3rem 0;
+      padding: 0.5rem;
+    }
+    #userList {
+      margin-top: 2rem;
+    }
+    hr {
+      border: 0.5px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Painel Administrativo</h1>
+  <button onclick="logout()">Sair</button>
+
+  <h2>Adicionar Usuário</h2>
+  <form id="addUserForm">
+    <input type="email" name="email" placeholder="Email" required><br>
+    <label><input type="checkbox" name="ativo"> Ativo</label><br>
+    <label><input type="checkbox" name="admin"> Admin</label><br>
+    <input type="number" name="dias" placeholder="Dias Restantes" required><br>
+    <button type="submit">Adicionar</button>
+  </form>
+
+  <div id="userList"></div>
+</body>
+</html>
