@@ -5,13 +5,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Betsafe Surebets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
     body {
+      display: flex;
+      height: 100vh;
       background-color: #0f0f0f;
       color: white;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
+    }
+    aside {
+      width: 250px;
+      background-color: #1a1a1a;
       padding: 1rem;
+    }
+    main {
+      flex: 1;
+      padding: 1rem;
+      background-color: #121212;
+      overflow-y: auto;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .surebet {
+      background: #1f1f1f;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .filtros-modal, .calculadora-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
+      padding: 2rem;
+      border-radius: 10px;
+      z-index: 1000;
+      display: none;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      z-index: 999;
     }
     button {
       background-color: #00c853;
@@ -20,9 +73,26 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
+    }
+    .input-group {
+      margin: 1rem 0;
+    }
+    nav ul {
+      list-style: none;
+      margin-top: 1rem;
+    }
+    nav li {
       margin-bottom: 1rem;
+      cursor: pointer;
     }
   </style>
+
+  <script>
+    if (localStorage.getItem("logado") !== "true") {
+      window.location.href = "index.html";
+    }
+  </script>
+
 </head>
 <body>
   <script>
@@ -31,13 +101,104 @@
     }
   </script>
 
-  <button onclick="logout()">Sair</button>
-  <h1>Bem-vindo ao Dashboard de Surebets</h1>
-  <p>Conteúdo protegido exibido aqui.</p>
+  <aside>
+    <h2>Betsafe</h2>
+    <p>eduarda.brito459@gmail.com</p>
+    <nav>
+      <ul>
+        <li>Surebets</li>
+        <li>Registros</li>
+        <li>Trocar Senha</li>
+        <li>Suporte</li>
+        <li onclick="abrirCalculadora()">Calculadora</li>
+      </ul>
+    </nav>
+    <button onclick="logout()">Sair</button>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <label for="tipo">Tipo:</label>
+        <select id="tipo"><option value="pre">Pre</option></select>
+        <label><input type="checkbox" checked /> Auto Update</label>
+        <label><input type="checkbox" /> Som De Alerta</label>
+      </div>
+      <button onclick="abrirFiltros()">Filtros</button>
+    </header>
+
+    <div class="surebet" onclick="abrirCalculadora()">
+      kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
+    </div>
+  </main>
+
+  <div class="overlay" id="overlay" onclick="fecharModais()"></div>
+
+  <div class="filtros-modal" id="filtrosModal">
+    <div class="modal-header">
+      <h3>Filtros</h3>
+      <button onclick="fecharModais()">X</button>
+    </div>
+    <div class="input-group">
+      <label>Porcentagem de ARBS</label>
+      <input type="number" value="0" style="width: 50px" /> a 
+      <input type="number" value="1000" style="width: 60px" /> %
+    </div>
+    <div class="input-group">
+      <label>Selecione as casas</label>
+      <select><option>Bet365</option></select>
+    </div>
+    <div class="input-group">
+      <label>Selecione os esportes</label>
+      <select><option>MLB</option></select>
+    </div>
+    <button onclick="fecharModais()">Salvar</button>
+  </div>
+
+  <div class="calculadora-modal" id="calculadoraModal">
+    <div class="modal-header">
+      <h3>Calculadora</h3>
+      <button onclick="fecharModais()">X</button>
+    </div>
+    <p>kc royals - chi white sox</p>
+    <table>
+      <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
+      <tr><td>McGames</td><td>Mais de (4.5)</td><td>2.05</td><td>50</td><td>R$3</td></tr>
+      <tr><td>Bet365</td><td>Menos de (4.5)</td><td>2.05</td><td>50</td><td>R$3</td></tr>
+    </table>
+    <p>Valor total apostado: 100</p>
+    <p style="color:#00c853">Porcentagem ganha: 2.5%</p>
+    <button onclick="abrirJanelas()">Abrir todas as casas</button>
+  </div>
 
   <script>
+    function abrirFiltros() {
+      document.getElementById('filtrosModal').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+    function abrirCalculadora() {
+      document.getElementById('calculadoraModal').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+    }
+    function fecharModais() {
+      document.getElementById('filtrosModal').style.display = 'none';
+      document.getElementById('calculadoraModal').style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+    }
+    function abrirJanelas() {
+      window.open('https://blaze.bet.br', '_blank');
+      window.open('https://bet365.com', '_blank');
+      window.open('https://betsafy.com.br/calculadora', '_blank');
+    }
     function logout() {
       localStorage.removeItem('logado');
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <script>
+    function sair() {
+      localStorage.removeItem("logado");
       window.location.href = "index.html";
     }
   </script>
