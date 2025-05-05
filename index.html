@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -73,9 +72,21 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
+      margin-right: 5px;
     }
     .input-group {
       margin: 1rem 0;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    td input {
+      width: 70px;
     }
   </style>
 </head>
@@ -84,13 +95,13 @@
     <h2>Betsafe</h2>
     <p>eduarda.brito459@gmail.com</p>
     <nav>
-  <ul>
-    <li>Surebets</li>
-    <li>Registros</li>
-    <li>Trocar Senha</li>
-    <li>Suporte</li>
-    <li style="cursor: pointer;" onclick="abrirCalculadora()">Calculadora</li>
-  </ul>
+      <ul>
+        <li>Surebets</li>
+        <li>Registros</li>
+        <li>Trocar Senha</li>
+        <li>Suporte</li>
+        <li style="cursor: pointer;" onclick="abrirCalculadora()">Calculadora</li>
+      </ul>
     </nav>
   </aside>
   <main>
@@ -119,8 +130,8 @@
     </div>
     <div class="input-group">
       <label>Porcentagem de ARBS</label>
-      <input type="number" value="0" style="width: 50px" /> a 
-      <input type="number" value="1000" style="width: 60px" /> %
+      <input type="number" value="0" /> a 
+      <input type="number" value="1000" /> %
     </div>
     <div class="input-group">
       <label>Selecione as casas</label>
@@ -141,11 +152,26 @@
     <p>kc royals - chi white sox</p>
     <table>
       <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
-      <tr><td>McGames</td><td>Mais de (4.5)</td><td>2.05</td><td>50</td><td>R$3</td></tr>
-      <tr><td>Bet365</td><td>Menos de (4.5)</td><td>2.05</td><td>50</td><td>R$3</td></tr>
+      <tr>
+        <td>McGames</td>
+        <td>Mais de (4.5)</td>
+        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+        <td><input type="number" class="valor" value="50" /></td>
+        <td class="lucro">R$0</td>
+      </tr>
+      <tr>
+        <td>Bet365</td>
+        <td>Menos de (4.5)</td>
+        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+        <td><input type="number" class="valor" value="50" /></td>
+        <td class="lucro">R$0</td>
+      </tr>
     </table>
-    <p>Valor total apostado: 100</p>
-    <p style="color:#00c853">Porcentagem ganha: 2.5%</p>
+    <div id="resultado"></div>
+    <br />
+    <button onclick="calcularLucro()">Calcular Lucro</button>
+    <button onclick="salvarAposta()">Salvar Aposta</button>
+    <button onclick="carregarAposta()">Carregar Aposta</button>
     <button onclick="abrirJanelas()">Abrir todas as casas</button>
   </div>
 
@@ -167,6 +193,67 @@
       window.open('https://blaze.bet.br', '_blank');
       window.open('https://bet365.com', '_blank');
       window.open('https://betsafy.com.br/calculadora', '_blank');
+    }
+
+    function calcularLucro() {
+      const odds = document.querySelectorAll('.odd');
+      const valores = document.querySelectorAll('.valor');
+      const lucros = document.querySelectorAll('.lucro');
+      const resultado = document.getElementById('resultado');
+
+      let totalApostado = 0;
+      let maxLucro = 0;
+
+      for (let i = 0; i < odds.length; i++) {
+        const odd = parseFloat(odds[i].value);
+        const valor = parseFloat(valores[i].value);
+        const lucro = (odd * valor - valor).toFixed(2);
+
+        lucros[i].textContent = `R$${lucro}`;
+        totalApostado += valor;
+        if (odd * valor - valor > maxLucro) {
+          maxLucro = odd * valor - valor;
+        }
+      }
+
+      const porcentagem = ((maxLucro / totalApostado) * 100).toFixed(2);
+
+      resultado.innerHTML = `
+        <p>Total apostado: R$${totalApostado.toFixed(2)}</p>
+        <p style="color:#00c853">Porcentagem ganha: ${porcentagem}%</p>
+      `;
+    }
+
+    function salvarAposta() {
+      const aposta = [];
+
+      const odds = document.querySelectorAll('.odd');
+      const valores = document.querySelectorAll('.valor');
+
+      for (let i = 0; i < odds.length; i++) {
+        aposta.push({
+          odd: odds[i].value,
+          valor: valores[i].value
+        });
+      }
+
+      localStorage.setItem('ultimaAposta', JSON.stringify(aposta));
+      alert('Aposta salva com sucesso!');
+    }
+
+    function carregarAposta() {
+      const aposta = JSON.parse(localStorage.getItem('ultimaAposta'));
+      if (!aposta) return;
+
+      const odds = document.querySelectorAll('.odd');
+      const valores = document.querySelectorAll('.valor');
+
+      for (let i = 0; i < aposta.length; i++) {
+        odds[i].value = aposta[i].odd;
+        valores[i].value = aposta[i].valor;
+      }
+
+      calcularLucro();
     }
   </script>
 </body>
