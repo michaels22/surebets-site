@@ -195,7 +195,6 @@
     </table>
     <div id="resultado"></div>
     <br />
-    <button onclick="calcularLucro()">Calcular Lucro</button>
     <button onclick="salvarAposta()">Salvar Aposta</button>
     <button onclick="carregarAposta()">Carregar Aposta</button>
     <button onclick="abrirJanelas()">Abrir todas as casas</button>
@@ -257,9 +256,10 @@
       lucros[1].textContent = `R$${lucro2}`;
 
       const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
-      resultado.innerHTML = `
-        <p style="color:#00c853">Porcentagem: ${porcentagem}%</p>
-      `;
+resultado.innerHTML = `
+  <p style="color:#00c853">Porcentagem: ${porcentagem}%</p>
+`;
+
     }
 
     function salvarAposta() {
