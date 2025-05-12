@@ -293,10 +293,24 @@
     }
 
     function abrirJanelas() {
-      window.open('https://blaze.bet.br', '_blank');
-      window.open('https://bet365.com', '_blank');
-      window.open('https://betsafy.com.br/calculadora', '_blank');
-    }
+    const screenWidth = window.screen.availWidth;
+    const screenHeight = window.screen.availHeight;
+
+    const windowWidth = Math.floor(screenWidth / 3);
+    const windowHeight = Math.floor(screenHeight * 0.95); // 95% da altura disponível
+
+    const urls = [
+      'https://blaze.bet.br',
+      'https://bet365.com',
+      'https://betsafy.com.br/calculadora'
+    ];
+
+    urls.forEach((url, index) => {
+      const left = index * windowWidth;
+      const features = `width=${windowWidth},height=${windowHeight},left=${left},top=0,resizable=yes,scrollbars=yes`;
+      window.open(url, `_blank`, features);
+    });
+  }
 
     function calcularLucro() {
       const odds = document.querySelectorAll('.odd');
