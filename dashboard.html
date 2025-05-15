@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Betwin Surebets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     * {
       margin: 0;
@@ -23,30 +22,29 @@
     aside {
       width: 250px;
       background-color: #1a1a1a;
-      padding: 1.5rem;
-      border-right: 1px solid #2a2a2a;
+      padding: 1rem;
     }
-    aside .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    aside h2 {
+      color: #00c853;
+      margin-bottom: 1rem;
+    }
+    aside p {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
       color: #ccc;
-      padding: 0.6rem 0.8rem;
-      border-radius: 8px;
-      transition: background 0.3s, color 0.3s;
-      cursor: pointer;
-      font-size: 0.95rem;
     }
-    aside .menu-item:hover {
-      background-color: #00c85320;
+    aside nav ul {
+      list-style: none;
+      margin-top: 1rem;
+    }
+    aside nav ul li {
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    aside nav ul li:hover {
       color: #00c853;
     }
-    aside .menu-item i {
-      width: 20px;
-      height: 20px;
-      color: inherit;
-    }
-
     main {
       flex: 1;
       padding: 1rem;
@@ -54,14 +52,12 @@
       overflow-y: auto;
       color: white;
     }
-
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
     }
-
     .surebet {
       background: #1f1f1f;
       padding: 1rem;
@@ -69,7 +65,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     .filtros-modal, .calculadora-modal {
       position: fixed;
       top: 50%;
@@ -82,13 +77,11 @@
       display: none;
       color: white;
     }
-
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
     .overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -96,7 +89,6 @@
       display: none;
       z-index: 999;
     }
-
     button {
       background-color: #00c853;
       border: none;
@@ -106,11 +98,9 @@
       cursor: pointer;
       margin-right: 5px;
     }
-
     .input-group {
       margin: 1rem 0;
     }
-
     input[type="number"] {
       width: 70px;
       padding: 4px;
@@ -119,32 +109,27 @@
       border: none;
       border-radius: 5px;
     }
-
     td input {
       width: 70px;
     }
-
     table {
       width: 100%;
       margin-top: 1rem;
     }
-
     th, td {
       padding: 6px;
       text-align: center;
     }
-
+    /* Estilo adicional para tabela de registros */
     #abaRegistros table {
       background-color: #1f1f1f;
       border-radius: 8px;
       overflow: hidden;
     }
-
     #abaRegistros thead {
       background-color: #00c853;
       color: #000;
     }
-
     #abaRegistros td {
       color: #ccc;
     }
@@ -152,44 +137,20 @@
 </head>
 <body>
   <aside>
-    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem;">
-      <i data-lucide="shield-check" style="color: #00c853;"></i>
-      <h2 style="margin: 0;">Betsafe</h2>
-    </div>
-    <div style="margin-bottom: 2rem;">
-      <p id="userEmail" style="font-weight: 600;">Carregando...</p>
-      <p id="diasRestantes" style="font-size: 0.85rem; color: #888;">Dias restantes: ...</p>
-    </div>
+    <h2>Betsafe</h2>
+    <p id="userEmail">Carregando...</p>
+    <p id="diasRestantes">Dias restantes: ...</p>
     <nav>
-      <ul style="list-style: none; padding: 0;">
-        <li class="menu-item" id="menuSurebets">
-          <i data-lucide="activity"></i>
-          <span>Surebets</span>
-        </li>
-        <li class="menu-item" id="menuRegistros">
-          <i data-lucide="book-open"></i>
-          <span>Registros</span>
-        </li>
-        <li class="menu-item">
-          <i data-lucide="key-round"></i>
-          <span>Trocar Senha</span>
-        </li>
-        <li class="menu-item">
-          <i data-lucide="life-buoy"></i>
-          <span>Suporte</span>
-        </li>
-        <li class="menu-item" onclick="abrirCalculadora()">
-          <i data-lucide="calculator"></i>
-          <span>Calculadora</span>
-        </li>
-        <li class="menu-item" onclick="logout()">
-          <i data-lucide="log-out"></i>
-          <span>Sair</span>
-        </li>
+      <ul>
+        <li id="menuSurebets">Surebets</li>
+        <li id="menuRegistros">Registros</li>
+        <li>Trocar Senha</li>
+        <li>Suporte</li>
+        <li onclick="abrirCalculadora()">Calculadora</li>
+        <li onclick="logout()">Sair</li>
       </ul>
     </nav>
   </aside>
-
   <main>
     <header>
       <div>
@@ -201,12 +162,14 @@
       <button onclick="abrirFiltros()">Filtros</button>
     </header>
 
+    <!-- ABA SUREBETS -->
     <div id="abaSurebets">
       <div class="surebet" onclick="abrirCalculadora()">
         kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
       </div>
     </div>
 
+    <!-- ABA REGISTROS -->
     <div id="abaRegistros" style="display: none;">
       <h2 style="margin-bottom: 1rem;">Registros</h2>
       <table>
@@ -330,24 +293,24 @@
     }
 
     function abrirJanelas() {
-      const screenWidth = window.screen.availWidth;
-      const screenHeight = window.screen.availHeight;
+    const screenWidth = window.screen.availWidth;
+    const screenHeight = window.screen.availHeight;
 
-      const windowWidth = Math.floor(screenWidth / 3);
-      const windowHeight = Math.floor(screenHeight * 0.95);
+    const windowWidth = Math.floor(screenWidth / 3);
+    const windowHeight = Math.floor(screenHeight * 0.95); // 95% da altura disponível
 
-      const urls = [
-        'https://blaze.bet.br',
-        'https://bet365.com',
-        'https://betsafy.com.br/calculadora'
-      ];
+    const urls = [
+      'https://blaze.bet.br',
+      'https://bet365.com',
+      'https://betsafy.com.br/calculadora'
+    ];
 
-      urls.forEach((url, index) => {
-        const left = index * windowWidth;
-        const features = `width=${windowWidth},height=${windowHeight},left=${left},top=0,resizable=yes,scrollbars=yes`;
-        window.open(url, `_blank`, features);
-      });
-    }
+    urls.forEach((url, index) => {
+      const left = index * windowWidth;
+      const features = `width=${windowWidth},height=${windowHeight},left=${left},top=0,resizable=yes,scrollbars=yes`;
+      window.open(url, `_blank`, features);
+    });
+  }
 
     function calcularLucro() {
       const odds = document.querySelectorAll('.odd');
@@ -386,7 +349,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
+      console.log("Página carregada");
       document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
         el.addEventListener('input', calcularLucro);
       });
