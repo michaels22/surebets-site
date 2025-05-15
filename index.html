@@ -3,31 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Betwin Surebets</title>
+  <title>Login - Betsafe Surebets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       padding: 0;
       font-family: 'Inter', sans-serif;
       background-color: #0f0f0f;
       color: white;
-      height: 100vh;
-      display: flex;
-    }
-
-    .left-panel {
-      width: 50%;
-      background-color: #1a1a1a;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
     }
-
     .login-box {
       background-color: #1a1a1a;
       padding: 2rem;
@@ -35,26 +24,17 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
       width: 300px;
     }
-
     h2 {
       text-align: center;
       margin-bottom: 1rem;
     }
-
     input {
       width: 100%;
       padding: 0.5rem;
       margin-bottom: 1rem;
       border: none;
       border-radius: 5px;
-      background-color: #2a2a2a;
-      color: white;
     }
-
-    input::placeholder {
-      color: #bbb;
-    }
-
     button {
       width: 100%;
       padding: 0.5rem;
@@ -63,62 +43,23 @@
       color: white;
       border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
     }
-
     .error {
       color: #ff5252;
       text-align: center;
       margin-top: 0.5rem;
     }
-
-    .right-panel {
-      width: 50%;
-      background: linear-gradient(to right, #d9d9d9, #ffffff);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .right-panel img {
-      max-width: 70%;
-    }
-
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
-      .left-panel, .right-panel {
-        width: 100%;
-        height: 50%;
-      }
-
-      .right-panel img {
-        max-width: 50%;
-      }
-    }
   </style>
 </head>
 <body>
-
-  <!-- Painel do formulário -->
-  <div class="left-panel">
-    <div class="login-box">
-      <h2>Login</h2>
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="senha" placeholder="Senha" />
-      <button onclick="logar()">Entrar</button>
-      <div class="error" id="erroLogin"></div>
-    </div>
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="senha" placeholder="Senha" />
+    <button onclick="logar()">Entrar</button>
+    <div class="error" id="erroLogin"></div>
   </div>
 
-  <!-- Painel da imagem -->
-  <div class="right-panel">
-    <img src="7635ec26-13ae-44ce-b757-5c429ab22c07.png" alt="Logo Betwin">
-  </div>
-
-  <!-- Firebase Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
