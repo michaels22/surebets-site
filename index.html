@@ -3,63 +3,154 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Betsafe Surebets</title>
+  <title>Login - Betwin Surebets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
       font-family: 'Inter', sans-serif;
       background-color: #0f0f0f;
       color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .left-panel {
+      width: 50%;
+      background-color: #0f0f0f;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-    }
-    .login-box {
-      background-color: #1a1a1a;
       padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      width: 300px;
     }
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
+
+    .login-box {
+      max-width: 350px;
+      width: 100%;
     }
+
+    .login-box h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
     input {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.6rem;
       margin-bottom: 1rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      background-color: #1e1e1e;
+      color: white;
     }
+
+    input::placeholder {
+      color: #888;
+    }
+
     button {
       width: 100%;
-      padding: 0.5rem;
+      padding: 0.6rem;
       background-color: #00c853;
       border: none;
       color: white;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
     }
+
+    button:hover {
+      background-color: #00b44a;
+    }
+
+    .signup-link {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      text-align: center;
+      color: #aaa;
+    }
+
+    .signup-link a {
+      color: #00c853;
+      text-decoration: none;
+    }
+
     .error {
       color: #ff5252;
       text-align: center;
       margin-top: 0.5rem;
     }
+
+    .right-panel {
+      width: 50%;
+      background: linear-gradient(to right, #003311, #000000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .right-panel img {
+      max-width: 70%;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      .left-panel, .right-panel {
+        width: 100%;
+        height: 50%;
+      }
+
+      .right-panel img {
+        max-width: 50%;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="senha" placeholder="Senha" />
-    <button onclick="logar()">Entrar</button>
-    <div class="error" id="erroLogin"></div>
+
+  <!-- Painel do formulário -->
+  <div class="left-panel">
+    <div class="login-box">
+      <h2>Bem-vindo(a)!</h2>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Digite seu email" />
+
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" placeholder="Password" />
+
+      <button onclick="logar()">Entrar</button>
+      <div class="error" id="erroLogin"></div>
+
+      <div class="signup-link">
+        Ainda não possui um plano? <a href="#">Clique aqui para assinar</a>
+      </div>
+    </div>
   </div>
 
+  <!-- Painel da imagem -->
+  <div class="right-panel">
+    <img src="7635ec26-13ae-44ce-b757-5c429ab22c07.png" alt="Logo Betwin">
+  </div>
+
+  <!-- Firebase Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
