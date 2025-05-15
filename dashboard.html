@@ -2,272 +2,253 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Betwin Surebets</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
     body {
-      display: flex;
-      height: 100vh;
-      background-color: #0f0f0f;
-      color: white;
-      overflow: hidden;
-    }
-    aside {
-      width: 250px;
-      background-color: #1a1a1a;
-      padding: 1rem;
-    }
-    aside h2 {
-      color: #00c853;
-      margin-bottom: 1rem;
-    }
-    aside p {
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    aside nav ul {
-      list-style: none;
-      margin-top: 1rem;
-    }
-    aside nav ul li {
-      margin: 1rem 0;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-    aside nav ul li:hover {
-      color: #00c853;
-    }
-    main {
-      flex: 1;
-      padding: 1rem;
-      background-color: #121212;
-      overflow-y: auto;
-      color: white;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .surebet {
-      background: #1f1f1f;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .filtros-modal, .calculadora-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #222;
-      padding: 2rem;
-      border-radius: 10px;
-      z-index: 1000;
-      display: none;
-      color: white;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      z-index: 999;
-    }
-    button {
-      background-color: #00c853;
-      border: none;
-      padding: 0.5rem 1rem;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-right: 5px;
-    }
-    .input-group {
-      margin: 1rem 0;
-    }
-    input[type="number"] {
-      width: 70px;
-      padding: 4px;
-      background: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    td input {
-      width: 70px;
-    }
-    table {
-      width: 100%;
-      margin-top: 1rem;
-    }
-    th, td {
-      padding: 6px;
-      text-align: center;
-    }
-    /* Estilo adicional para tabela de registros */
-    #abaRegistros table {
-      background-color: #1f1f1f;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    #abaRegistros thead {
-      background-color: #00c853;
-      color: #000;
-    }
-    #abaRegistros td {
-      color: #ccc;
+      font-family: 'Inter', sans-serif;
     }
   </style>
 </head>
-<body>
-  <aside>
-    <h2>Betsafe</h2>
-    <p id="userEmail">Carregando...</p>
-    <p id="diasRestantes">Dias restantes: ...</p>
-    <nav>
-      <ul>
-        <li id="menuSurebets">Surebets</li>
-        <li id="menuRegistros">Registros</li>
-        <li>Trocar Senha</li>
-        <li>Suporte</li>
-        <li onclick="abrirCalculadora()">Calculadora</li>
-        <li onclick="logout()">Sair</li>
+<body class="flex h-screen bg-[#0f0f0f] text-white overflow-hidden">
+  <aside class="w-[250px] bg-[#1a1a1a] p-4 flex flex-col">
+    <h2 class="text-[#00c853] mb-4 font-semibold text-xl">Betsafe</h2>
+    <p id="userEmail" class="mb-2 text-gray-400 text-sm">Carregando...</p>
+    <p id="diasRestantes" class="mb-4 text-gray-400 text-sm">Dias restantes: ...</p>
+    <nav class="mt-4">
+      <ul class="space-y-4 text-gray-300">
+        <li id="menuSurebets" class="cursor-pointer hover:text-[#00c853] transition-colors">Surebets</li>
+        <li id="menuRegistros" class="cursor-pointer hover:text-[#00c853] transition-colors">Registros</li>
+        <li class="cursor-pointer hover:text-[#00c853] transition-colors">Trocar Senha</li>
+        <li class="cursor-pointer hover:text-[#00c853] transition-colors">Suporte</li>
+        <li class="cursor-pointer hover:text-[#00c853] transition-colors" onclick="abrirCalculadora()">Calculadora</li>
+        <li class="cursor-pointer hover:text-[#00c853] transition-colors" onclick="logout()">Sair</li>
       </ul>
     </nav>
   </aside>
-  <main>
-    <header>
-      <div>
-        <label for="tipo">Tipo:</label>
-        <select id="tipo"><option value="pre">Pre</option></select>
-        <label><input type="checkbox" checked /> Auto Update</label>
-        <label><input type="checkbox" /> Som De Alerta</label>
+  <main class="flex-1 p-4 bg-[#121212] overflow-y-auto text-white flex flex-col">
+    <header class="flex justify-between items-center mb-4">
+      <div class="flex items-center space-x-4">
+        <label for="tipo" class="mr-1">Tipo:</label>
+        <select id="tipo" class="bg-[#1f1f1f] text-white rounded px-2 py-1">
+          <option value="pre">Pre</option>
+        </select>
+        <label class="flex items-center space-x-1">
+          <input type="checkbox" checked class="accent-[#00c853]" />
+          <span>Auto Update</span>
+        </label>
+        <label class="flex items-center space-x-1">
+          <input type="checkbox" class="accent-[#00c853]" />
+          <span>Som De Alerta</span>
+        </label>
       </div>
-      <button onclick="abrirFiltros()">Filtros</button>
+      <button
+        class="bg-[#00c853] hover:bg-[#00b244] px-4 py-2 rounded text-white transition"
+        onclick="abrirFiltros()"
+      >
+        Filtros
+      </button>
     </header>
 
     <!-- ABA SUREBETS -->
-    <div id="abaSurebets">
-      <div class="surebet" onclick="abrirCalculadora()">
-        kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
+    <div id="abaSurebets" class="flex flex-col space-y-4">
+      <div
+        class="bg-[#1f1f1f] p-4 rounded-lg cursor-pointer hover:bg-[#2a2a2a] transition flex justify-between items-center"
+        onclick="abrirCalculadora()"
+      >
+        <span>kc royals - chi white sox</span>
+        <span class="text-[#00c853] font-semibold">2.5%</span>
       </div>
     </div>
 
     <!-- ABA REGISTROS -->
-    <div id="abaRegistros" style="display: none;">
-      <h2 style="margin-bottom: 1rem;">Registros</h2>
-      <table>
-        <thead>
+    <div id="abaRegistros" class="mt-4" style="display: none;">
+      <h2 class="mb-4 text-xl font-semibold">Registros</h2>
+      <table class="w-full rounded-lg overflow-hidden">
+        <thead class="bg-[#00c853] text-black">
           <tr>
-            <th>Data</th>
-            <th>Evento</th>
-            <th>Casa 1</th>
-            <th>Odd 1</th>
-            <th>Casa 2</th>
-            <th>Odd 2</th>
-            <th>Lucro</th>
+            <th class="py-2 px-3 text-center">Data</th>
+            <th class="py-2 px-3 text-center">Evento</th>
+            <th class="py-2 px-3 text-center">Casa 1</th>
+            <th class="py-2 px-3 text-center">Odd 1</th>
+            <th class="py-2 px-3 text-center">Casa 2</th>
+            <th class="py-2 px-3 text-center">Odd 2</th>
+            <th class="py-2 px-3 text-center">Lucro</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-[#1f1f1f] text-gray-300">
           <tr>
-            <td>05/05/2025</td>
-            <td>Time A vs Time B</td>
-            <td>Blaze</td>
-            <td>2.00</td>
-            <td>Bet365</td>
-            <td>2.00</td>
-            <td style="color: #00c853;">+2.5%</td>
+            <td class="py-2 px-3 text-center">05/05/2025</td>
+            <td class="py-2 px-3 text-center">Time A vs Time B</td>
+            <td class="py-2 px-3 text-center">Blaze</td>
+            <td class="py-2 px-3 text-center">2.00</td>
+            <td class="py-2 px-3 text-center">Bet365</td>
+            <td class="py-2 px-3 text-center">2.00</td>
+            <td class="py-2 px-3 text-center text-[#00c853]">+2.5%</td>
           </tr>
           <tr>
-            <td>04/05/2025</td>
-            <td>Time X vs Time Y</td>
-            <td>Betano</td>
-            <td>2.10</td>
-            <td>Pixbet</td>
-            <td>1.95</td>
-            <td style="color: #00c853;">+1.2%</td>
+            <td class="py-2 px-3 text-center">04/05/2025</td>
+            <td class="py-2 px-3 text-center">Time X vs Time Y</td>
+            <td class="py-2 px-3 text-center">Betano</td>
+            <td class="py-2 px-3 text-center">2.10</td>
+            <td class="py-2 px-3 text-center">Pixbet</td>
+            <td class="py-2 px-3 text-center">1.95</td>
+            <td class="py-2 px-3 text-center text-[#00c853]">+1.2%</td>
           </tr>
         </tbody>
       </table>
     </div>
   </main>
 
-  <div class="overlay" id="overlay" onclick="fecharModais()"></div>
+  <div
+    id="overlay"
+    class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden"
+    onclick="fecharModais()"
+  ></div>
 
-  <div class="filtros-modal" id="filtrosModal">
-    <div class="modal-header">
-      <h3>Filtros</h3>
-      <button onclick="fecharModais()">X</button>
+  <div
+    id="filtrosModal"
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#222] p-8 rounded-xl z-60 hidden max-w-md w-full text-white"
+  >
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold">Filtros</h3>
+      <button
+        class="text-white hover:text-gray-300 text-xl font-bold"
+        onclick="fecharModais()"
+      >
+        ×
+      </button>
     </div>
-    <div class="input-group">
-      <label>Porcentagem de ARBS</label>
-      <input type="number" value="0" /> a 
-      <input type="number" value="1000" /> %
+    <div class="mb-4">
+      <label class="block mb-1">Porcentagem de ARBS</label>
+      <div class="flex space-x-2">
+        <input
+          type="number"
+          value="0"
+          class="w-16 px-2 py-1 rounded bg-[#333] text-white border-none focus:outline-none"
+        />
+        <span class="self-center">a</span>
+        <input
+          type="number"
+          value="1000"
+          class="w-16 px-2 py-1 rounded bg-[#333] text-white border-none focus:outline-none"
+        />
+        <span class="self-center">%</span>
+      </div>
     </div>
-    <div class="input-group">
-      <label>Selecione as casas</label>
-      <select><option>Bet365</option></select>
+    <div class="mb-4">
+      <label class="block mb-1">Selecione as casas</label>
+      <select class="w-full rounded bg-[#333] text-white px-2 py-1">
+        <option>Bet365</option>
+      </select>
     </div>
-    <div class="input-group">
-      <label>Selecione os esportes</label>
-      <select><option>MLB</option></select>
+    <div class="mb-4">
+      <label class="block mb-1">Selecione os esportes</label>
+      <select class="w-full rounded bg-[#333] text-white px-2 py-1">
+        <option>MLB</option>
+      </select>
     </div>
-    <button onclick="fecharModais()">Salvar</button>
+    <button
+      class="bg-[#00c853] hover:bg-[#00b244] px-4 py-2 rounded text-white transition"
+      onclick="fecharModais()"
+    >
+      Salvar
+    </button>
   </div>
 
-  <div class="calculadora-modal" id="calculadoraModal">
-    <div class="modal-header">
-      <h3>Calculadora</h3>
-      <button onclick="fecharModais()">X</button>
+  <div
+    id="calculadoraModal"
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#222] p-8 rounded-xl z-60 hidden max-w-xl w-full text-white"
+  >
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold">Calculadora</h3>
+      <button
+        class="text-white hover:text-gray-300 text-xl font-bold"
+        onclick="fecharModais()"
+      >
+        ×
+      </button>
     </div>
-    <p>kc royals - chi white sox</p>
-    <table>
+    <p class="mb-4">kc royals - chi white sox</p>
+    <table class="w-full mb-4">
       <thead>
-        <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
+        <tr>
+          <th class="border border-[#444] px-2 py-1">Casa</th>
+          <th class="border border-[#444] px-2 py-1">Aposta</th>
+          <th class="border border-[#444] px-2 py-1">Odd</th>
+          <th class="border border-[#444] px-2 py-1">Valor</th>
+          <th class="border border-[#444] px-2 py-1">Lucro</th>
+        </tr>
       </thead>
       <tbody>
         <tr>
-          <td>McGames</td>
-          <td>Mais de (4.5)</td>
-          <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td><input type="number" class="valor" value="50" /></td>
-          <td class="lucro">R$0</td>
+          <td class="border border-[#444] px-2 py-1">McGames</td>
+          <td class="border border-[#444] px-2 py-1">Mais de (4.5)</td>
+          <td class="border border-[#444] px-2 py-1">
+            <input
+              type="number"
+              class="odd bg-[#333] text-white rounded px-1 py-0.5 w-20"
+              value="2.05"
+              step="0.01"
+            />
+          </td>
+          <td class="border border-[#444] px-2 py-1">
+            <input
+              type="number"
+              class="valor bg-[#333] text-white rounded px-1 py-0.5 w-20"
+              value="50"
+            />
+          </td>
+          <td class="border border-[#444] px-2 py-1 lucro">R$0</td>
         </tr>
         <tr>
-          <td>Bet365</td>
-          <td>Menos de (4.5)</td>
-          <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td><input type="number" class="valor" value="50" /></td>
-          <td class="lucro">R$0</td>
+          <td class="border border-[#444] px-2 py-1">Bet365</td>
+          <td class="border border-[#444] px-2 py-1">Menos de (4.5)</td>
+          <td class="border border-[#444] px-2 py-1">
+            <input
+              type="number"
+              class="odd bg-[#333] text-white rounded px-1 py-0.5 w-20"
+              value="2.05"
+              step="0.01"
+            />
+          </td>
+          <td class="border border-[#444] px-2 py-1">
+            <input
+              type="number"
+              class="valor bg-[#333] text-white rounded px-1 py-0.5 w-20"
+              value="50"
+            />
+          </td>
+          <td class="border border-[#444] px-2 py-1 lucro">R$0</td>
         </tr>
       </tbody>
     </table>
-    <div id="resultado" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-      <div style="display: flex; align-items: center;">
-        <strong style="color: #00c853; margin-right: 8px;">Total investido:</strong>
+    <div
+      id="resultado"
+      class="flex justify-between items-center mt-4"
+      style="display: flex;"
+    >
+      <div class="flex items-center space-x-2">
+        <strong class="text-[#00c853]">Total investido:</strong>
         <span id="totalInvestidoTexto">R$0.00</span>
-        <input type="number" id="valorTotalInvestido" placeholder="Total" style="margin-left: 10px;" />
+        <input
+          type="number"
+          id="valorTotalInvestido"
+          placeholder="Total"
+          class="ml-2 bg-[#333] text-white rounded px-2 py-1 w-24"
+        />
       </div>
-      <strong id="porcentagemLucro" style="color:#00c853;">0%</strong>
+      <strong id="porcentagemLucro" class="text-[#00c853]">0%</strong>
     </div>
     <br />
-    <button onclick="abrirJanelas()">Abrir todas as casas</button>
+    <button
+      class="bg-[#00c853] hover:bg-[#00b244] px-4 py-2 rounded text-white transition"
+      onclick="abrirJanelas()"
+    >
+      Abrir todas as casas
+    </button>
   </div>
 
   <script>
@@ -277,93 +258,31 @@
     }
 
     function abrirFiltros() {
-      document.getElementById('filtrosModal').style.display = 'block';
-      document.getElementById('overlay').style.display = 'block';
+      document.getElementById("filtrosModal").style.display = "block";
+      document.getElementById("overlay").style.display = "block";
     }
 
     function abrirCalculadora() {
-      document.getElementById('calculadoraModal').style.display = 'block';
-      document.getElementById('overlay').style.display = 'block';
+      document.getElementById("calculadoraModal").style.display = "block";
+      document.getElementById("overlay").style.display = "block";
     }
 
     function fecharModais() {
-      document.getElementById('filtrosModal').style.display = 'none';
-      document.getElementById('calculadoraModal').style.display = 'none';
-      document.getElementById('overlay').style.display = 'none';
+      document.getElementById("filtrosModal").style.display = "none";
+      document.getElementById("calculadoraModal").style.display = "none";
+      document.getElementById("overlay").style.display = "none";
     }
 
     function abrirJanelas() {
-    const screenWidth = window.screen.availWidth;
-    const screenHeight = window.screen.availHeight;
+      const screenWidth = window.screen.availWidth;
+      const screenHeight = window.screen.availHeight;
 
-    const windowWidth = Math.floor(screenWidth / 3);
-    const windowHeight = Math.floor(screenHeight * 0.95); // 95% da altura disponível
+      const windowWidth = Math.floor(screenWidth / 3);
+      const windowHeight = Math.floor(screenHeight * 0.95); // 95% da altura disponível
 
-    const urls = [
-      'https://blaze.bet.br',
-      'https://bet365.com',
-      'https://betsafy.com.br/calculadora'
-    ];
+      const urls = [
+        "https://blaze.bet.br",
+        "https://bet365.com",
+        "https://betsafy.com.br/calculadora",
+      ];
 
-    urls.forEach((url, index) => {
-      const left = index * windowWidth;
-      const features = `width=${windowWidth},height=${windowHeight},left=${left},top=0,resizable=yes,scrollbars=yes`;
-      window.open(url, `_blank`, features);
-    });
-  }
-
-    function calcularLucro() {
-      const odds = document.querySelectorAll('.odd');
-      const valores = document.querySelectorAll('.valor');
-      const lucros = document.querySelectorAll('.lucro');
-      const totalInvestidoTexto = document.getElementById('totalInvestidoTexto');
-      const porcentagemLucro = document.getElementById('porcentagemLucro');
-      const valorTotalInput = document.getElementById('valorTotalInvestido');
-
-      const odd1 = parseFloat(odds[0].value);
-      const odd2 = parseFloat(odds[1].value);
-      let valor1, valor2;
-      let totalInvestido = parseFloat(valorTotalInput.value);
-
-      if (!isNaN(totalInvestido) && totalInvestido > 0) {
-        valor1 = totalInvestido / (1 + (odd1 / odd2));
-        valor2 = totalInvestido - valor1;
-        valores[0].value = valor1.toFixed(2);
-        valores[1].value = valor2.toFixed(2);
-      } else {
-        valor1 = parseFloat(valores[0].value);
-        if (isNaN(valor1)) valor1 = 0;
-        valor2 = (valor1 * odd1) / odd2;
-        valores[1].value = valor2.toFixed(2);
-        totalInvestido = valor1 + valor2;
-      }
-
-      const lucro1 = (valor1 * odd1 - totalInvestido).toFixed(2);
-      const lucro2 = (valor2 * odd2 - totalInvestido).toFixed(2);
-      lucros[0].textContent = `R$${lucro1}`;
-      lucros[1].textContent = `R$${lucro2}`;
-
-      const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
-      totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
-      porcentagemLucro.textContent = `${porcentagem}%`;
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log("Página carregada");
-      document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
-        el.addEventListener('input', calcularLucro);
-      });
-
-      document.getElementById("menuSurebets").addEventListener("click", () => {
-        document.getElementById("abaSurebets").style.display = "block";
-        document.getElementById("abaRegistros").style.display = "none";
-      });
-
-      document.getElementById("menuRegistros").addEventListener("click", () => {
-        document.getElementById("abaSurebets").style.display = "none";
-        document.getElementById("abaRegistros").style.display = "block";
-      });
-    });
-  </script>
-</body>
-</html>
