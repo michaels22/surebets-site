@@ -1,80 +1,103 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Calculadora Surebet</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      padding: 20px;
+      background: #f2f2f2;
+      padding: 30px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
+
+    .calculadora {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .calculadora h2 {
+      text-align: center;
       margin-bottom: 20px;
     }
-    th, td {
-      border: 1px solid #333;
+
+    .campo {
+      margin-bottom: 15px;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .campo input {
+      width: 100%;
       padding: 10px;
-      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
     }
-    input[type="number"] {
-      background: #333;
-      color: white;
-      border: none;
-      padding: 6px;
-      border-radius: 4px;
-      width: 80px;
-    }
+
     .resultado {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      margin-top: 20px;
+      padding: 10px;
+      background: #e9f9e9;
+      border: 1px solid #c6e6c6;
+      border-radius: 6px;
     }
-    .lucro {
-      color: #00c853;
+
+    .resultado p {
+      margin: 5px 0;
+      font-weight: bold;
+    }
+
+    .lucro-verde {
+      color: green;
     }
   </style>
 </head>
 <body>
-  <h2>Calculadora</h2>
-  <table>
-    <thead>
-      <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>McGames</td>
-        <td>Mais de (4.5)</td>
-        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-        <td><input type="number" class="valor" value="50" /></td>
-        <td class="lucro">R$0</td>
-      </tr>
-      <tr>
-        <td>Bet365</td>
-        <td>Menos de (4.5)</td>
-        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-        <td><input type="number" class="valor" value="50" /></td>
-        <td class="lucro">R$0</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="calculadora">
+    <h2>Calculadora Surebet</h2>
 
-  <div class="resultado">
-    <div>
-      <strong>Total investido:</strong>
-      <span id="totalInvestidoTexto">R$0.00</span>
-      <input type="number" id="valorTotalInvestido" placeholder="Total" />
+    <div class="campo">
+      <label for="odd1">Odd 1</label>
+      <input type="number" step="0.01" class="odd" placeholder="Ex: 2.10" oninput="calcularLucro()">
     </div>
-    <strong id="porcentagemLucro" class="lucro">0%</strong>
+
+    <div class="campo">
+      <label for="odd2">Odd 2</label>
+      <input type="number" step="0.01" class="odd" placeholder="Ex: 1.95" oninput="calcularLucro()">
+    </div>
+
+    <div class="campo">
+      <label for="valor1">Valor 1</label>
+      <input type="number" step="0.01" class="valor" placeholder="Aposta 1" oninput="calcularLucro()">
+    </div>
+
+    <div class="campo">
+      <label for="valor2">Valor 2</label>
+      <input type="number" step="0.01" class="valor" placeholder="Aposta 2" oninput="calcularLucro()">
+    </div>
+
+    <div class="campo">
+      <label for="valorTotalInvestido">Total Investido</label>
+      <input type="number" step="0.01" id="valorTotalInvestido" placeholder="Ex: 100.00" oninput="calcularLucro()">
+    </div>
+
+    <div class="resultado">
+      <p>Total Investido: <span id="totalInvestidoTexto">R$0.00</span></p>
+      <p>Lucro 1: <span class="lucro lucro-verde">R$0.00</span></p>
+      <p>Lucro 2: <span class="lucro lucro-verde">R$0.00</span></p>
+      <p>Lucro mínimo: <span id="porcentagemLucro" class="lucro-verde">0%</span></p>
+    </div>
   </div>
 
   <script>
-    let ultimoEditado = null;
-
     function calcularLucro() {
       const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
@@ -85,27 +108,38 @@
 
       const odd1 = parseFloat(odds[0].value);
       const odd2 = parseFloat(odds[1].value);
+
       let valor1 = parseFloat(valores[0].value);
       let valor2 = parseFloat(valores[1].value);
-      let totalInvestido = parseFloat(valorTotalInput.value);
+      const totalInvestidoInput = parseFloat(valorTotalInput.value);
 
-      if (!isNaN(totalInvestido) && totalInvestido > 0) {
-        valor1 = totalInvestido / (1 + (odd1 / odd2));
-        valor2 = totalInvestido - valor1;
+      let totalInvestido = 0;
+
+      if (!isNaN(totalInvestidoInput) && totalInvestidoInput > 0 && !isNaN(odd1) && !isNaN(odd2)) {
+        valor1 = totalInvestidoInput / (1 + (odd1 / odd2));
+        valor2 = totalInvestidoInput - valor1;
         valores[0].value = valor1.toFixed(2);
         valores[1].value = valor2.toFixed(2);
-      } else if (ultimoEditado === valores[0]) {
-        if (!isNaN(valor1)) {
-          valor2 = (valor1 * odd1) / odd2;
-          valores[1].value = valor2.toFixed(2);
-        }
+        totalInvestido = totalInvestidoInput;
+      } else if (!isNaN(valor1) && !isNaN(valor2)) {
         totalInvestido = valor1 + valor2;
-      } else if (ultimoEditado === valores[1]) {
-        if (!isNaN(valor2)) {
-          valor1 = (valor2 * odd2) / odd1;
-          valores[0].value = valor1.toFixed(2);
-        }
+        valorTotalInput.value = totalInvestido.toFixed(2);
+      } else if (!isNaN(valor1) && isNaN(valor2) && !isNaN(odd1) && !isNaN(odd2)) {
+        valor2 = (valor1 * odd1) / odd2;
+        valores[1].value = valor2.toFixed(2);
         totalInvestido = valor1 + valor2;
+        valorTotalInput.value = totalInvestido.toFixed(2);
+      } else if (!isNaN(valor2) && isNaN(valor1) && !isNaN(odd1) && !isNaN(odd2)) {
+        valor1 = (valor2 * odd2) / odd1;
+        valores[0].value = valor1.toFixed(2);
+        totalInvestido = valor1 + valor2;
+        valorTotalInput.value = totalInvestido.toFixed(2);
+      } else {
+        lucros[0].textContent = "R$0.00";
+        lucros[1].textContent = "R$0.00";
+        totalInvestidoTexto.textContent = "R$0.00";
+        porcentagemLucro.textContent = "0%";
+        return;
       }
 
       const lucro1 = (valor1 * odd1 - totalInvestido).toFixed(2);
@@ -113,21 +147,11 @@
       lucros[0].textContent = `R$${lucro1}`;
       lucros[1].textContent = `R$${lucro2}`;
 
-      const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
+      const menorLucro = Math.min(parseFloat(lucro1), parseFloat(lucro2));
+      const porcentagem = ((menorLucro / totalInvestido) * 100).toFixed(2);
       totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
       porcentagemLucro.textContent = `${porcentagem}%`;
     }
-
-    document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
-      el.addEventListener('input', () => {
-        if (el.classList.contains('valor')) {
-          ultimoEditado = el;
-        } else if (el.id === 'valorTotalInvestido') {
-          ultimoEditado = null;
-        }
-        calcularLucro();
-      });
-    });
   </script>
 </body>
 </html>
