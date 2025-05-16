@@ -369,8 +369,8 @@
       } else {
         valor1 = parseFloat(valores[0].value);
         if (isNaN(valor1)) valor1 = 0;
-        valor2 = parseFloat(valores[0].value);
-        if (isNaN(valor2)) valor2 = 0;
+        valor2 = (valor1 * odd1) / odd2;
+        valores[1].value = valor2.toFixed(2);
         totalInvestido = valor1 + valor2;
       }
 
