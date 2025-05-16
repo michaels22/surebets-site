@@ -354,7 +354,8 @@
 
       const odd1 = parseFloat(odds[0].value);
       const odd2 = parseFloat(odds[1].value);
-      let valor1, valor2;
+      let valor1 = parseFloat(valores[0].value);
+      let valor2 = parseFloat(valores[1].value);
       let totalInvestido = parseFloat(valorTotalInput.value);
 
       if (!isNaN(totalInvestido) && totalInvestido > 0) {
@@ -362,11 +363,17 @@
         valor2 = totalInvestido - valor1;
         valores[0].value = valor1.toFixed(2);
         valores[1].value = valor2.toFixed(2);
-      } else {
-        valor1 = parseFloat(valores[0].value);
-        if (isNaN(valor1)) valor1 = 0;
-        valor2 = (valor1 * odd1) / odd2;
-        valores[1].value = valor2.toFixed(2);
+      } else if (ultimoEditado === valores[0]) {
+        if (!isNaN(valor1)) {
+          valor2 = (valor1 * odd1) / odd2;
+          valores[1].value = valor2.toFixed(2);
+        }
+        totalInvestido = valor1 + valor2;
+      } else if (ultimoEditado === valores[1]) {
+        if (!isNaN(valor2)) {
+          valor1 = (valor2 * odd2) / odd1;
+          valores[0].value = valor1.toFixed(2);
+        }
         totalInvestido = valor1 + valor2;
       }
 
