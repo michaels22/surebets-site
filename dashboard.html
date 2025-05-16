@@ -359,7 +359,7 @@
 
       if (!isNaN(totalInvestido) && totalInvestido > 0) {
         valor1 = totalInvestido / (1 + (odd1 / odd2));
-        valor2 = totalInvestido / (2 + (odd1 / odd2));
+        valor2 = totalInvestido - valor1;
         valores[0].value = valor1.toFixed(2);
         valores[1].value = valor2.toFixed(2);
       } else {
