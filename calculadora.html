@@ -5,71 +5,144 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora Surebet</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      background: #111;
+      background-color: #000;
       color: #fff;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
+    .calculadora {
+      background-color: #1e1e1e;
+      padding: 20px 30px;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #ccc;
+      margin-bottom: 20px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
     }
+
     th, td {
-      border: 1px solid #333;
       padding: 10px;
       text-align: center;
     }
+
+    th {
+      font-weight: 600;
+      color: #ccc;
+    }
+
     input[type="number"] {
-      background: #333;
-      color: white;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 6px;
+      border-radius: 4px;
+      width: 70px;
+      text-align: center;
+    }
+
+    .lucro {
+      color: #00c853;
+    }
+
+    .resultado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      margin-top: 10px;
+    }
+
+    #valorTotalInvestido {
+      margin-left: 10px;
+      background-color: #333;
+      color: #fff;
       border: none;
       padding: 6px;
       border-radius: 4px;
       width: 80px;
     }
-    .resultado {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+
+    .botao-verde {
+      margin-top: 20px;
+      background-color: #00c853;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
     }
-    .lucro {
-      color: #00c853;
+
+    .botao-verde:hover {
+      background-color: #00b347;
     }
   </style>
 </head>
 <body>
-  <h2>Calculadora</h2>
-  <table>
-    <thead>
-      <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>McGames</td>
-        <td>Mais de (4.5)</td>
-        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-        <td><input type="number" class="valor" value="50" /></td>
-        <td class="lucro">R$0</td>
-      </tr>
-      <tr>
-        <td>Bet365</td>
-        <td>Menos de (4.5)</td>
-        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-        <td><input type="number" class="valor" value="50" /></td>
-        <td class="lucro">R$0</td>
-      </tr>
-    </tbody>
-  </table>
 
-  <div class="resultado">
-    <div>
-      <strong>Total investido:</strong>
-      <span id="totalInvestidoTexto">R$0.00</span>
-      <input type="number" id="valorTotalInvestido" placeholder="Total" />
+  <div class="calculadora">
+    <h2>Calculadora</h2>
+    <div class="subtitle">kc royals - chi white sox</div>
+
+    <table>
+      <thead>
+        <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>McGames</td>
+          <td>Mais de (4.5)</td>
+          <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+          <td><input type="number" class="valor" value="50" /></td>
+          <td class="lucro">R$0</td>
+        </tr>
+        <tr>
+          <td>Bet365</td>
+          <td>Menos de (4.5)</td>
+          <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+          <td><input type="number" class="valor" value="50" /></td>
+          <td class="lucro">R$0</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="resultado">
+      <div>
+        <strong>Total investido:</strong>
+        <span id="totalInvestidoTexto">R$0.00</span>
+        <input type="number" id="valorTotalInvestido" placeholder="Total" />
+      </div>
+      <strong id="porcentagemLucro" class="lucro">0%</strong>
     </div>
-    <strong id="porcentagemLucro" class="lucro">0%</strong>
+
+    <button class="botao-verde">Abrir todas as casas</button>
   </div>
 
   <script>
@@ -118,16 +191,23 @@
       porcentagemLucro.textContent = `${porcentagem}%`;
     }
 
+    // Foco em qual campo foi editado
+    document.querySelectorAll('.valor').forEach(el => {
+      el.addEventListener('focus', () => {
+        ultimoEditado = el;
+      });
+    });
+
+    // Recalcular ao digitar
     document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
       el.addEventListener('input', () => {
-        if (el.classList.contains('valor')) {
-          ultimoEditado = el;
-        } else if (el.id === 'valorTotalInvestido') {
+        if (el.id === 'valorTotalInvestido') {
           ultimoEditado = null;
         }
         calcularLucro();
       });
     });
   </script>
+
 </body>
 </html>
