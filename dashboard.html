@@ -348,7 +348,7 @@
       });
     }
 
-    function calcularLucro(origem) {
+    function calcularLucro() {
       const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
       const lucros = document.querySelectorAll('.lucro');
@@ -358,43 +358,31 @@
 
       const odd1 = parseFloat(odds[0].value);
       const odd2 = parseFloat(odds[1].value);
-      let valor1 = parseFloat(valores[0].value);
-      let valor2 = parseFloat(valores[1].value);
+      let valor1, valor2;
       let totalInvestido = parseFloat(valorTotalInput.value);
 
-  // Lógica de controle com base na origem da edição
-  if (origem === 'total') {
-    if (!isNaN(totalInvestido) && totalInvestido > 0 && !isNaN(odd1) && !isNaN(odd2)) {
-      valor1 = totalInvestido / (1 + (odd1 / odd2));
-      valor2 = totalInvestido - valor1;
+      if (!isNaN(totalInvestido) && totalInvestido > 0) {
+        valor1 = totalInvestido / (1 + (odd1 / odd2));
+        valor2 = totalInvestido - valor1;
+        valores[0].value = valor1.toFixed(2);
+        valores[1].value = valor2.toFixed(2);
+      } else {
+        valor1 = parseFloat(valores[0].value);
+        if (isNaN(valor1)) valor1 = 0;
+        valor2 = (valor1 * odd1) / odd2;
+        valores[1].value = valor2.toFixed(2);
+        totalInvestido = valor1 + valor2;
+      }
+
+      const lucro1 = (valor1 * odd1 - totalInvestido).toFixed(2);
+      const lucro2 = (valor2 * odd2 - totalInvestido).toFixed(2);
+      lucros[0].textContent = `R$${lucro1}`;
+      lucros[1].textContent = `R$${lucro2}`;
+
+      const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
+      totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
+      porcentagemLucro.textContent = `${porcentagem}%`;
     }
-  } else if (origem === 'valor1') {
-    if (!isNaN(valor1) && !isNaN(odd1) && !isNaN(odd2)) {
-      valor2 = (valor1 * odd1) / odd2;
-      totalInvestido = valor1 + valor2;
-    }
-  } else if (origem === 'valor2') {
-    if (!isNaN(valor2) && !isNaN(odd1) && !isNaN(odd2)) {
-      valor1 = (valor2 * odd2) / odd1;
-      totalInvestido = valor1 + valor2;
-    }
-  }
-
-  if (!isNaN(valor1)) valores[0].value = valor1.toFixed(2);
-  if (!isNaN(valor2)) valores[1].value = valor2.toFixed(2);
-  if (!isNaN(totalInvestido)) valorTotalInput.value = totalInvestido.toFixed(2);
-
-  const lucro1 = valor1 * odd1 - totalInvestido;
-  const lucro2 = valor2 * odd2 - totalInvestido;
-  lucros[0].textContent = `R$${lucro1.toFixed(2)}`;
-  lucros[1].textContent = `R$${lucro2.toFixed(2)}`;
-
-  const menorLucro = Math.min(lucro1, lucro2);
-  const porcentagem = (menorLucro / totalInvestido) * 100;
-  totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
-  porcentagemLucro.textContent = `${porcentagem.toFixed(2)}%`;
-}
-
 
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
