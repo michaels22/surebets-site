@@ -2,10 +2,132 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Calculadora</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Surebet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 10px;
+      text-align: center;
+    }
+    input[type="number"] {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 6px;
+      border-radius: 4px;
+      width: 80px;
+    }
+    .resultado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .lucro {
+      color: #00c853;
+    }
+  </style>
 </head>
 <body>
-  <h1>Calculadora de Surebets</h1>
-  <p>Ferramenta para calcular lucros em apostas de arbitragem.</p>
+  <h2>Calculadora</h2>
+  <table>
+    <thead>
+      <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>McGames</td>
+        <td>Mais de (4.5)</td>
+        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+        <td><input type="number" class="valor" value="50" /></td>
+        <td class="lucro">R$0</td>
+      </tr>
+      <tr>
+        <td>Bet365</td>
+        <td>Menos de (4.5)</td>
+        <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
+        <td><input type="number" class="valor" value="50" /></td>
+        <td class="lucro">R$0</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="resultado">
+    <div>
+      <strong>Total investido:</strong>
+      <span id="totalInvestidoTexto">R$0.00</span>
+      <input type="number" id="valorTotalInvestido" placeholder="Total" />
+    </div>
+    <strong id="porcentagemLucro" class="lucro">0%</strong>
+  </div>
+
+  <script>
+    let ultimoEditado = null;
+
+    function calcularLucro() {
+      const odds = document.querySelectorAll('.odd');
+      const valores = document.querySelectorAll('.valor');
+      const lucros = document.querySelectorAll('.lucro');
+      const totalInvestidoTexto = document.getElementById('totalInvestidoTexto');
+      const porcentagemLucro = document.getElementById('porcentagemLucro');
+      const valorTotalInput = document.getElementById('valorTotalInvestido');
+
+      const odd1 = parseFloat(odds[0].value);
+      const odd2 = parseFloat(odds[1].value);
+      let valor1 = parseFloat(valores[0].value);
+      let valor2 = parseFloat(valores[1].value);
+      let totalInvestido = parseFloat(valorTotalInput.value);
+
+      if (!isNaN(totalInvestido) && totalInvestido > 0) {
+        valor1 = totalInvestido / (1 + (odd1 / odd2));
+        valor2 = totalInvestido - valor1;
+        valores[0].value = valor1.toFixed(2);
+        valores[1].value = valor2.toFixed(2);
+      } else if (ultimoEditado === valores[0]) {
+        if (!isNaN(valor1)) {
+          valor2 = (valor1 * odd1) / odd2;
+          valores[1].value = valor2.toFixed(2);
+        }
+        totalInvestido = valor1 + valor2;
+      } else if (ultimoEditado === valores[1]) {
+        if (!isNaN(valor2)) {
+          valor1 = (valor2 * odd2) / odd1;
+          valores[0].value = valor1.toFixed(2);
+        }
+        totalInvestido = valor1 + valor2;
+      }
+
+      const lucro1 = (valor1 * odd1 - totalInvestido).toFixed(2);
+      const lucro2 = (valor2 * odd2 - totalInvestido).toFixed(2);
+      lucros[0].textContent = `R$${lucro1}`;
+      lucros[1].textContent = `R$${lucro2}`;
+
+      const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
+      totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
+      porcentagemLucro.textContent = `${porcentagem}%`;
+    }
+
+    document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
+      el.addEventListener('input', () => {
+        if (el.classList.contains('valor')) {
+          ultimoEditado = el;
+        } else if (el.id === 'valorTotalInvestido') {
+          ultimoEditado = null;
+        }
+        calcularLucro();
+      });
+    });
+  </script>
 </body>
 </html>
