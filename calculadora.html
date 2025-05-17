@@ -133,15 +133,16 @@
       </tbody>
     </table>
 
-    <div class="resultado">
-  <div style="text-align: center;">
-    <strong style="display: block;">Total investido</strong>
-    <input type="number" id="valorTotalInvestido" placeholder="Total" step="1" min="0"
-      style="margin: 8px auto 0; display: block; width: 90px; height: 36px;" />
+    <div class="resultado" style="display: flex; justify-content: space-between; margin-top: 30px;">
+  <div style="text-align: left;">
+    <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 6px;">Valor total apostado</div>
+    <input type="number" id="valorTotalInvestido" placeholder="0"
+      style="background-color: #2a2a2a; color: white; border: none; border-radius: 8px; padding: 10px 12px; width: 100px; font-weight: bold; font-size: 1rem;" />
   </div>
-  <div style="text-align: center;">
-    <strong style="display: block;">Porcentagem ganha</strong>
-    <strong id="porcentagemLucro" class="lucro" style="font-size: 1.2rem; display: block; margin-top: 8px;">0%</strong>
+  <div style="text-align: right;">
+    <div style="font-weight: bold; font-size: 0.95rem; margin-bottom: 6px;">Porcentagem ganha</div>
+    <div id="porcentagemLucro"
+      style="font-size: 1.5rem; font-weight: bold; color: #00ff66;">0%</div>
   </div>
 </div>
 
