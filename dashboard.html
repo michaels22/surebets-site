@@ -469,8 +469,8 @@
 
 <!-- Integração com API BetBurger -->
 <script>
-  const API_URL = 'https://api.betburger.com/v1/arbs';
-  const API_KEY = 'de036b91e46a010078123b7e9649c4f5'; // Substitua por sua chave da API
+  const API_URL = 'https://rest-api-pr.betburger.com/api/v1/arbs/bot_pro_search';
+  const API_KEY = 'SUA_API_KEY'; // Substitua por sua chave da API
 
   function obterFiltros() {
     const minLucro = parseFloat(document.getElementById("filtroMinLucro").value) || 0;
@@ -502,6 +502,12 @@
 
   async function preencherFiltrosDinamicos() {
     const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
       headers: { 'Authorization': `Token ${API_KEY}` }
     });
     if (!response.ok) return;
@@ -532,6 +538,12 @@
   async function carregarSurebets() {
     const { minLucro, maxLucro, casasSelecionadas, esportesSelecionados } = obterFiltros();
     const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
       headers: { 'Authorization': `Token ${API_KEY}` }
     });
     const aba = document.getElementById("abaSurebets");
