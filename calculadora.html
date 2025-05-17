@@ -191,6 +191,9 @@
 
       const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
       totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
+if (isNaN(parseFloat(valorTotalInput.value)) || valorTotalInput !== document.activeElement) {
+  valorTotalInput.value = totalInvestido.toFixed(2);
+}
       porcentagemLucro.textContent = `${porcentagem}%`;
     }
 
