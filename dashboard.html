@@ -412,17 +412,16 @@
         }
         calcularLucro();
       });
+      
       <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) {
       lucide.createIcons(); // <-- ESSA LINHA FAZ OS ÍCONES FUNCIONAREM
     }
-
     document.getElementById("menuSurebets").addEventListener("click", () => {
       document.getElementById("abaSurebets").style.display = "block";
       document.getElementById("abaRegistros").style.display = "none";
     });
-
     document.getElementById("menuRegistros").addEventListener("click", () => {
       document.getElementById("abaSurebets").style.display = "none";
       document.getElementById("abaRegistros").style.display = "block";
