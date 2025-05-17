@@ -188,7 +188,9 @@
   lucros[0].textContent = `R$${lucro1}`;
   lucros[1].textContent = `R$${lucro2}`;
 
-  totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
+if (document.activeElement !== valorTotalInput) {
+  valorTotalInput.value = totalInvestido.toFixed(2);
+}
 
   // Preencher o input do total se não estiver sendo editado manualmente
   if (isNaN(parseFloat(valorTotalInput.value)) || valorTotalInput !== document.activeElement) {
