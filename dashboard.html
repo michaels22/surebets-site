@@ -397,10 +397,23 @@
       porcentagemLucro.textContent = `${porcentagem}%`;
     }
 
+    document.querySelectorAll('.valor').forEach(el => {
+      el.addEventListener('focus', () => {
+        ultimoEditado = el;
+      });
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
-        el.addEventListener('input', calcularLucro);
+      el.addEventListener('input', () => {
+        if (el.id === 'valorTotalInvestido') {
+          ultimoEditado = null;
+        }
+        if (el.classList.contains('valor') || el.id === 'valorTotalInvestido') {
+          el.value = el.value.replace(/[^\d]/g, '');
+        }
+        calcularLucro();
       });
 
       document.getElementById("menuSurebets").addEventListener("click", () => {
