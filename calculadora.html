@@ -74,13 +74,13 @@
     .resultado {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       font-size: 0.95rem;
       margin-top: 10px;
     }
 
     #valorTotalInvestido {
-      margin-left: 10px;
+      margin-top: 5px;
       background-color: #333;
       color: #fff;
       border: none;
@@ -105,7 +105,7 @@
     }
   </style>
 </head>
-  <body>
+<body>
 
   <div class="calculadora">
     <h2>Calculadora</h2>
@@ -120,22 +120,22 @@
           <td>McGames</td>
           <td>Mais de (4.5)</td>
           <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td><input type="number" class="valor" value="50" step="1" min="0" /></td>
-          <td class="lucro">0</td>
+          <td><input type="number" class="valor" value="50" /></td>
+          <td class="lucro">R$0</td>
         </tr>
         <tr>
           <td>Bet365</td>
           <td>Menos de (4.5)</td>
           <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td><input type="number" class="valor" value="50" step="1" min="0" /></td>
-          <td class="lucro">0</td>
+          <td><input type="number" class="valor" value="50" /></td>
+          <td class="lucro">R$0</td>
         </tr>
       </tbody>
     </table>
 
-    <div class="resultado" style="flex-direction: column; align-items: flex-start;">
-      <div style="margin-bottom: 10px;">
-        <strong>Total investido:</strong><br />
+    <div class="resultado">
+      <div style="display: flex; flex-direction: column;">
+        <strong>Total investido:</strong>
         <input type="number" id="valorTotalInvestido" placeholder="Total" step="1" min="0" />
       </div>
       <div style="display: flex; align-items: center; gap: 6px;">
@@ -144,75 +144,73 @@
       </div>
     </div>
 
+    <script>
+      let ultimoEditado = null;
+
+      function calcularLucro() {
+        const odds = document.querySelectorAll('.odd');
+        const valores = document.querySelectorAll('.valor');
+        const lucros = document.querySelectorAll('.lucro');
+        const porcentagemLucro = document.getElementById('porcentagemLucro');
+        const valorTotalInput = document.getElementById('valorTotalInvestido');
+
+        const odd1 = parseFloat(odds[0].value);
+        const odd2 = parseFloat(odds[1].value);
+        let valor1 = parseFloat(valores[0].value);
+        let valor2 = parseFloat(valores[1].value);
+        let totalInvestido = parseFloat(valorTotalInput.value);
+
+        if (!isNaN(totalInvestido) && totalInvestido > 0 && valorTotalInput === document.activeElement) {
+          valor1 = totalInvestido / (1 + (odd1 / odd2));
+          valor2 = totalInvestido - valor1;
+          valores[0].value = Math.floor(valor1);
+          valores[1].value = Math.floor(valor2);
+        } else if (ultimoEditado === valores[0]) {
+          if (!isNaN(valor1)) {
+            valor2 = (valor1 * odd1) / odd2;
+            valores[1].value = Math.floor(valor2);
+          }
+          totalInvestido = valor1 + valor2;
+        } else if (ultimoEditado === valores[1]) {
+          if (!isNaN(valor2)) {
+            valor1 = (valor2 * odd2) / odd1;
+            valores[0].value = Math.floor(valor1);
+          }
+          totalInvestido = valor1 + valor2;
+        }
+
+        const lucro1 = Math.floor(valor1 * odd1 - totalInvestido);
+        const lucro2 = Math.floor(valor2 * odd2 - totalInvestido);
+        lucros[0].textContent = `R$${lucro1}`;
+        lucros[1].textContent = `R$${lucro2}`;
+
+        if (document.activeElement !== valorTotalInput) {
+          valorTotalInput.value = Math.floor(totalInvestido);
+        }
+
+        const menorLucro = Math.min(lucro1, lucro2);
+        const porcentagem = totalInvestido > 0 ? ((menorLucro / totalInvestido) * 100).toFixed(2) : 0;
+        porcentagemLucro.textContent = `${porcentagem}%`;
+      }
+
+      document.querySelectorAll('.valor').forEach(el => {
+        el.addEventListener('focus', () => {
+          ultimoEditado = el;
+        });
+      });
+
+      document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
+        el.addEventListener('input', () => {
+          if (el.id === 'valorTotalInvestido') {
+            ultimoEditado = null;
+          }
+          calcularLucro();
+        });
+      });
+
+      calcularLucro(); // Inicializa o cálculo ao carregar a página
+    </script>
   </div>
-
-  <script>
-    let ultimoEditado = null;
-
-    function calcularLucro() {
-      const odds = document.querySelectorAll('.odd');
-      const valores = document.querySelectorAll('.valor');
-      const lucros = document.querySelectorAll('.lucro');
-      const porcentagemLucro = document.getElementById('porcentagemLucro');
-      const valorTotalInput = document.getElementById('valorTotalInvestido');
-
-      const odd1 = parseFloat(odds[0].value);
-      const odd2 = parseFloat(odds[1].value);
-      let valor1 = parseInt(valores[0].value);
-      let valor2 = parseInt(valores[1].value);
-      let totalInvestido = parseInt(valorTotalInput.value);
-
-      if (!isNaN(totalInvestido) && totalInvestido > 0 && valorTotalInput === document.activeElement) {
-        valor1 = Math.floor(totalInvestido / (1 + (odd1 / odd2)));
-        valor2 = totalInvestido - valor1;
-        valores[0].value = valor1;
-        valores[1].value = valor2;
-      } else if (ultimoEditado === valores[0]) {
-        if (!isNaN(valor1)) {
-          valor2 = Math.floor((valor1 * odd1) / odd2);
-          valores[1].value = valor2;
-        }
-        totalInvestido = valor1 + valor2;
-      } else if (ultimoEditado === valores[1]) {
-        if (!isNaN(valor2)) {
-          valor1 = Math.floor((valor2 * odd2) / odd1);
-          valores[0].value = valor1;
-        }
-        totalInvestido = valor1 + valor2;
-      }
-
-      const lucro1 = Math.floor(valor1 * odd1 - totalInvestido);
-      const lucro2 = Math.floor(valor2 * odd2 - totalInvestido);
-      lucros[0].textContent = `${lucro1}`;
-      lucros[1].textContent = `${lucro2}`;
-
-      if (document.activeElement !== valorTotalInput) {
-        valorTotalInput.value = totalInvestido;
-      }
-
-      const porcentagem = totalInvestido > 0 ? ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2) : 0;
-      porcentagemLucro.textContent = `${porcentagem}%`;
-    }
-
-    document.querySelectorAll('.valor').forEach(el => {
-      el.addEventListener('focus', () => {
-        ultimoEditado = el;
-      });
-    });
-
-    document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
-      el.addEventListener('input', () => {
-        if (el.id === 'valorTotalInvestido') {
-          ultimoEditado = null;
-        }
-        // Forçar inteiro ao digitar
-        if (el.classList.contains('valor') || el.id === 'valorTotalInvestido') {
-          el.value = el.value.replace(/[^\d]/g, '');
-        }
-        calcularLucro();
-      });
-    });
-  </script>
 
 </body>
 </html>
