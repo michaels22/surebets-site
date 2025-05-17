@@ -164,7 +164,7 @@
   let valor2 = parseFloat(valores[1].value);
   let totalInvestido = parseFloat(valorTotalInput.value);
 
-  if (!isNaN(totalInvestido) && totalInvestido > 0 && valorTotalInput === document.activeElement) {
+  if (!isNaN(totalInvestido) && totalInvestido > 0) {
     valor1 = totalInvestido / (1 + (odd1 / odd2));
     valor2 = totalInvestido - valor1;
     valores[0].value = valor1.toFixed(2);
@@ -190,14 +190,14 @@
 
   totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
 
-  // Preencher o input do total se não estiver sendo editado manualmente
-  if (isNaN(parseFloat(valorTotalInput.value)) || valorTotalInput !== document.activeElement) {
-    valorTotalInput.value = totalInvestido.toFixed(2);
-  }
+  // Agora atualiza sempre, mesmo durante edição manual
+  valorTotalInput.value = totalInvestido.toFixed(2);
 
-  const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
+  const menorLucro = Math.min(lucro1, lucro2);
+  const porcentagem = ((menorLucro / totalInvestido) * 100).toFixed(2);
   porcentagemLucro.textContent = `${porcentagem}%`;
 }
+
 
     // Foco em qual campo foi editado
     document.querySelectorAll('.valor').forEach(el => {
