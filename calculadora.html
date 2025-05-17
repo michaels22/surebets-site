@@ -23,23 +23,22 @@
 
     .calculadora {
       background-color: #1e1e1e;
-      padding: 25px 30px;
-      border-radius: 12px;
-      max-width: 640px;
+      padding: 20px 30px;
+      border-radius: 10px;
+      max-width: 600px;
       width: 100%;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
     }
 
     h2 {
-      margin: 0 0 5px 0;
-      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 5px;
     }
 
     .subtitle {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: #ccc;
       margin-bottom: 20px;
-      font-style: italic;
     }
 
     table {
@@ -56,65 +55,70 @@
     th {
       font-weight: 600;
       color: #ccc;
-      font-size: 0.95rem;
     }
 
     td {
       font-size: 0.95rem;
+      text-align: center; /* centraliza as células horizontalmente */
     }
 
     input[type="number"] {
-      background-color: #2a2a2a;
+      background-color: #333;
       color: #fff;
       border: none;
       padding: 10px;
       border-radius: 6px;
-      width: 80px;
+      width: 70px;
       text-align: center;
     }
 
     .lucro {
       color: #00c853;
-      font-weight: bold;
     }
 
     .resultado {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       font-size: 0.95rem;
       margin-top: 10px;
     }
 
-    .valor-total, .porcentagem {
+    .resultado div {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
     }
 
-    .valor-total input {
-      margin-top: 6px;
-      width: 90px;
-      padding: 10px;
-      background-color: #2a2a2a;
-      border-radius: 6px;
-      border: none;
+    #valorTotalInvestido {
+      margin-top: 4px;
+      background-color: #333;
       color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      width: 100px;
       text-align: center;
     }
 
-    .porcentagem {
-      align-items: flex-end;
-    }
-
-    .porcentagem strong {
-      font-size: 0.95rem;
-      color: #ccc;
-    }
-
     #porcentagemLucro {
-      font-size: 1.5rem;
-      margin-top: 6px;
+      margin-top: 4px;
+      font-size: 1.4rem;
+    }
+
+    .botao-verde {
+      margin-top: 20px;
+      background-color: #00c853;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .botao-verde:hover {
+      background-color: #00b347;
     }
   </style>
 </head>
@@ -126,24 +130,18 @@
 
     <table>
       <thead>
-        <tr>
-          <th>Casa</th>
-          <th>Aposta</th>
-          <th>Odd</th>
-          <th>Valor</th>
-          <th>Lucro</th>
-        </tr>
+        <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td style="color:#f3b13e;">McGames</td>
+          <td style="color:#f3b13e;">Bet365</td>
           <td>Mais de (4.5)</td>
           <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
           <td><input type="number" class="valor" value="50" step="1" min="0" /></td>
           <td class="lucro">0</td>
         </tr>
         <tr>
-          <td style="color:#f3b13e;">Bet365</td>
+          <td style="color:#f79646;">Betano</td>
           <td>Menos de (4.5)</td>
           <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
           <td><input type="number" class="valor" value="50" step="1" min="0" /></td>
@@ -153,11 +151,11 @@
     </table>
 
     <div class="resultado">
-      <div class="valor-total">
+      <div>
         <strong>Valor total apostado</strong>
         <input type="number" id="valorTotalInvestido" placeholder="Total" step="1" min="0" />
       </div>
-      <div class="porcentagem">
+      <div>
         <strong>Porcentagem ganha</strong>
         <strong id="porcentagemLucro" class="lucro">0%</strong>
       </div>
@@ -223,6 +221,7 @@
         if (el.id === 'valorTotalInvestido') {
           ultimoEditado = null;
         }
+        // Forçar inteiro ao digitar
         if (el.classList.contains('valor') || el.id === 'valorTotalInvestido') {
           el.value = el.value.replace(/[^\d]/g, '');
         }
@@ -230,5 +229,6 @@
       });
     });
   </script>
+
 </body>
 </html>
