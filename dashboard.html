@@ -264,43 +264,51 @@
   </div>
 
   <div class="calculadora-modal" id="calculadoraModal">
-    <div class="modal-header">
-      <h3>Calculadora</h3>
-      <button onclick="fecharModais()">X</button>
-    </div>
-    <p>kc royals - chi white sox</p>
-    <table>
-      <thead>
-        <tr><th>Casa</th><th>Aposta</th><th>Odd</th><th>Valor</th><th>Lucro</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>McGames</td>
-          <td>Mais de (4.5)</td>
-          <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td><input type="number" class="valor" value="50" /></td>
-          <td class="lucro">R$0</td>
-        </tr>
-        <tr>
-          <td>Bet365</td>
-          <td>Menos de (4.5)</td>
-          <td><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td><input type="number" class="valor" value="50" /></td>
-          <td class="lucro">R$0</td>
-        </tr>
-      </tbody>
-    </table>
-    <div id="resultado" style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
-      <div style="display: flex; align-items: center;">
-        <strong style="color: #00c853; margin-right: 8px;">Total investido:</strong>
-        <span id="totalInvestidoTexto">R$0.00</span>
-        <input type="number" id="valorTotalInvestido" placeholder="Total" style="margin-left: 10px;" />
-      </div>
-      <strong id="porcentagemLucro" style="color:#00c853;">0%</strong>
-    </div>
-    <br />
-    <button onclick="abrirJanelas()">Abrir todas as casas</button>
+  <div class="modal-header">
+    <h3>Calculadora</h3>
+    <button onclick="fecharModais()">X</button>
   </div>
+  <div class="subtitle">kc royals - chi white sox</div>
+  <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th style="text-align: left; padding-left: 12px; color: #ccc;">Casa</th>
+        <th style="text-align: left; padding-left: 12px; color: #ccc;">Aposta</th>
+        <th style="text-align: left; padding-left: 12px; color: #ccc;">Odd</th>
+        <th style="text-align: left; padding-left: 12px; color: #ccc;">Valor</th>
+        <th style="text-align: left; padding-left: 12px; color: #ccc;">Lucro</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align: left; padding-left: 12px; color:#f3b13e;">McGames</td>
+        <td style="text-align: left; padding-left: 12px;">Mais de (4.5)</td>
+        <td style="text-align: left; padding-left: 12px;"><input type="number" class="odd" value="2.05" step="0.01" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
+        <td style="text-align: left; padding-left: 12px;"><input type="number" class="valor" value="50" step="1" min="0" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
+        <td class="lucro" style="text-align: left; padding-left: 12px; color:#00c853; font-weight: bold;">0</td>
+      </tr>
+      <tr>
+        <td style="text-align: left; padding-left: 12px; color:#f3b13e;">Bet365</td>
+        <td style="text-align: left; padding-left: 12px;">Menos de (4.5)</td>
+        <td style="text-align: left; padding-left: 12px;"><input type="number" class="odd" value="2.05" step="0.01" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
+        <td style="text-align: left; padding-left: 12px;"><input type="number" class="valor" value="50" step="1" min="0" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
+        <td class="lucro" style="text-align: left; padding-left: 12px; color:#00c853; font-weight: bold;">0</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="resultado" style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.95rem; margin-top: 10px;">
+    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+      <strong>Valor total</strong>
+      <input type="number" id="valorTotalInvestido" placeholder="Total" step="1" min="0" style="margin-top: 6px; width: 90px; padding: 10px; background-color: #2a2a2a; border-radius: 6px; border: none; color: #fff; text-align: center;" />
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+      <strong style="font-size: 0.95rem; color: #ccc;">Porcentagem ganha</strong>
+      <strong id="porcentagemLucro" class="lucro" style="font-size: 1.5rem; margin-top: 6px; color: #00c853;">0%</strong>
+    </div>
+  </div>
+  <br />
+  <button onclick="abrirJanelas()">Abrir todas as casas</button>
+</div>
 
   <script>
     function logout() {
