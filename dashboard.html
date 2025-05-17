@@ -412,17 +412,23 @@
         }
         calcularLucro();
       });
-      document.getElementById("menuSurebets").addEventListener("click", () => {
-        document.getElementById("abaSurebets").style.display = "block";
-        document.getElementById("abaRegistros").style.display = "none";
-      });
+      <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if (window.lucide) {
+      lucide.createIcons(); // <-- ESSA LINHA FAZ OS ÍCONES FUNCIONAREM
+    }
 
-      document.getElementById("menuRegistros").addEventListener("click", () => {
-        document.getElementById("abaSurebets").style.display = "none";
-        document.getElementById("abaRegistros").style.display = "block";
-      });
+    document.getElementById("menuSurebets").addEventListener("click", () => {
+      document.getElementById("abaSurebets").style.display = "block";
+      document.getElementById("abaRegistros").style.display = "none";
     });
-  </script>
+
+    document.getElementById("menuRegistros").addEventListener("click", () => {
+      document.getElementById("abaSurebets").style.display = "none";
+      document.getElementById("abaRegistros").style.display = "block";
+    });
+  });
+</script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
