@@ -19,20 +19,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       font-size: 0.5rem;
     }
-
-    .logo-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 15px;
-}
-
-.logo {
-  max-width: 150px;
-  height: auto;
-}
 
     .calculadora {
       background-color: #1e1e1e;
@@ -138,43 +126,36 @@
 </head>
 <body>
 
-  <div class="logo-container">
-    <img src="logo-betwin.png" alt="Logo Betwin" class="logo-betwin">
-  </div>
-
-<div class="calculadora">
-  <div class="logo-container">
-    <img src="logo.png" alt="Logo Betsafe" class="logo" />
-  </div>
-  <h2>Calculadora</h2>
-  <div class="subtitle">kc royals - chi white sox</div>
+  <div class="calculadora">
+    <h2>Calculadora</h2>
+    <div class="subtitle">kc royals - chi white sox</div>
 
     <table>
       <thead>
-        <tr>
-          <th class="align-left">Casa</th>
-          <th class="align-left">Aposta</th>
-          <th class="align-left">Odd</th>
-          <th class="align-left">Valor</th>
-          <th class="align-left">Lucro</th>
-        </tr>
-      </thead>
+  <tr>
+    <th class="align-left">Casa</th>
+    <th class="align-left">Aposta</th>
+    <th class="align-left">Odd</th>
+    <th class="align-left">Valor</th>
+    <th class="align-left">Lucro</th>
+  </tr>
+</thead>
       <tbody>
-        <tr>
-          <td class="align-left" style="color:#f3b13e;">McGames</td>
-          <td class="align-left">Mais de (4.5)</td>
-          <td class="align-left"><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td class="align-left"><input type="number" class="valor" value="50" step="1" min="0" /></td>
-          <td class="align-left lucro">0</td>
-        </tr>
-        <tr>
-          <td class="align-left" style="color:#f3b13e;">Bet365</td>
-          <td class="align-left">Menos de (4.5)</td>
-          <td class="align-left"><input type="number" class="odd" value="2.05" step="0.01" /></td>
-          <td class="align-left"><input type="number" class="valor" value="50" step="1" min="0" /></td>
-          <td class="align-left lucro">0</td>
-        </tr>
-      </tbody>
+  <tr>
+    <td class="align-left" style="color:#f3b13e;">McGames</td>
+    <td class="align-left">Mais de (4.5)</td>
+    <td class="align-left"><input type="number" class="odd" value="2.05" step="0.01" /></td>
+    <td class="align-left"><input type="number" class="valor" value="50" step="1" min="0" /></td>
+    <td class="align-left lucro">0</td>
+  </tr>
+  <tr>
+    <td class="align-left" style="color:#f3b13e;">Bet365</td>
+    <td class="align-left">Menos de (4.5)</td>
+    <td class="align-left"><input type="number" class="odd" value="2.05" step="0.01" /></td>
+    <td class="align-left"><input type="number" class="valor" value="50" step="1" min="0" /></td>
+    <td class="align-left lucro">0</td>
+  </tr>
+</tbody>
     </table>
 
     <div class="resultado">
