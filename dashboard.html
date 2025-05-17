@@ -360,10 +360,10 @@
       const porcentagemLucro = document.getElementById('porcentagemLucro');
       const valorTotalInput = document.getElementById('valorTotalInvestido');
 
-      const odd1 = parseFloat(odds[0].value);
-      const odd2 = parseFloat(odds[1].value);
-      let valor1, valor2;
-      let totalInvestido = parseFloat(valorTotalInput.value);
+      const odd1 = parseFloat(odds[0].value.replace(',', '.'));
+      const odd2 = parseFloat(odds[1].value.replace(',', '.'));
+      let valor1 = parseFloat(valores[0].value.replace(',', '.'));
+      let valor2 = parseFloat(valores[1].value.replace(',', '.'));
 
       if (!isNaN(totalInvestido) && totalInvestido > 0) {
         valor1 = totalInvestido / (1 + (odd1 / odd2));
