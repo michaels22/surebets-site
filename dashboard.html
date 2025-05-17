@@ -348,44 +348,63 @@
       const odds = document.querySelectorAll('.odd');
       const valores = document.querySelectorAll('.valor');
       const lucros = document.querySelectorAll('.lucro');
-      const totalInvestidoTexto = document.getElementById('totalInvestidoTexto');
       const porcentagemLucro = document.getElementById('porcentagemLucro');
       const valorTotalInput = document.getElementById('valorTotalInvestido');
 
       const odd1 = parseFloat(odds[0].value);
       const odd2 = parseFloat(odds[1].value);
-      let valor1, valor2;
-      let totalInvestido = parseFloat(valorTotalInput.value);
+      let valor1 = parseInt(valores[0].value);
+      let valor2 = parseInt(valores[1].value);
+      let totalInvestido = parseInt(valorTotalInput.value);
 
-      if (!isNaN(totalInvestido) && totalInvestido > 0) {
-        valor1 = totalInvestido / (1 + (odd1 / odd2));
+      if (!isNaN(totalInvestido) && totalInvestido > 0 && valorTotalInput === document.activeElement) {
+        valor1 = Math.floor(totalInvestido / (1 + (odd1 / odd2)));
         valor2 = totalInvestido - valor1;
-        valores[0].value = valor1.toFixed(2);
-        valores[1].value = valor2.toFixed(2);
-      } else {
-        valor1 = parseFloat(valores[0].value);
-        if (isNaN(valor1)) valor1 = 0;
-        valor2 = (valor1 * odd1) / odd2;
-        valores[1].value = valor2.toFixed(2);
+        valores[0].value = valor1;
+        valores[1].value = valor2;
+      } else if (ultimoEditado === valores[0]) {
+        if (!isNaN(valor1)) {
+          valor2 = Math.floor((valor1 * odd1) / odd2);
+          valores[1].value = valor2;
+        }
+        totalInvestido = valor1 + valor2;
+      } else if (ultimoEditado === valores[1]) {
+        if (!isNaN(valor2)) {
+          valor1 = Math.floor((valor2 * odd2) / odd1);
+          valores[0].value = valor1;
+        }
         totalInvestido = valor1 + valor2;
       }
 
-      const lucro1 = (valor1 * odd1 - totalInvestido).toFixed(2);
-      const lucro2 = (valor2 * odd2 - totalInvestido).toFixed(2);
-      lucros[0].textContent = `R$${lucro1}`;
-      lucros[1].textContent = `R$${lucro2}`;
+      const lucro1 = Math.floor(valor1 * odd1 - totalInvestido);
+      const lucro2 = Math.floor(valor2 * odd2 - totalInvestido);
+      lucros[0].textContent = `${lucro1}`;
+      lucros[1].textContent = `${lucro2}`;
 
-      const porcentagem = ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2);
-      totalInvestidoTexto.textContent = `R$${totalInvestido.toFixed(2)}`;
+      if (document.activeElement !== valorTotalInput) {
+        valorTotalInput.value = totalInvestido;
+      }
+
+      const porcentagem = totalInvestido > 0 ? ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2) : 0;
       porcentagemLucro.textContent = `${porcentagem}%`;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
-        el.addEventListener('input', calcularLucro);
+    document.querySelectorAll('.valor').forEach(el => {
+      el.addEventListener('focus', () => {
+        ultimoEditado = el;
       });
+    });
 
+    document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
+      el.addEventListener('input', () => {
+        if (el.id === 'valorTotalInvestido') {
+          ultimoEditado = null;
+        }
+        if (el.classList.contains('valor') || el.id === 'valorTotalInvestido') {
+          el.value = el.value.replace(/[^\d]/g, '');
+        }
+        calcularLucro();
+      });
       document.getElementById("menuSurebets").addEventListener("click", () => {
         document.getElementById("abaSurebets").style.display = "block";
         document.getElementById("abaRegistros").style.display = "none";
