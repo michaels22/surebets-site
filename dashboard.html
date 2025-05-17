@@ -416,18 +416,25 @@
       <script>
   document.addEventListener("DOMContentLoaded", () => {
     if (window.lucide) {
-      lucide.createIcons(); // <-- ESSA LINHA FAZ OS ÍCONES FUNCIONAREM
+      lucide.createIcons(); // Corrige os ícones
     }
+
+    document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
+      el.addEventListener('input', calcularLucro);
+    });
+
     document.getElementById("menuSurebets").addEventListener("click", () => {
       document.getElementById("abaSurebets").style.display = "block";
       document.getElementById("abaRegistros").style.display = "none";
     });
+
     document.getElementById("menuRegistros").addEventListener("click", () => {
       document.getElementById("abaSurebets").style.display = "none";
       document.getElementById("abaRegistros").style.display = "block";
     });
   });
 </script>
+
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
