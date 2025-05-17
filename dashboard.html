@@ -466,5 +466,115 @@
       document.getElementById("user-days").textContent = "";
     }
   </script>
+
+<!-- Integração com API BetBurger -->
+<script>
+  const API_URL = 'https://api.betburger.com/v1/arbs';
+  const API_KEY = 'SUA_API_KEY'; // Substitua por sua chave da API
+
+  function obterFiltros() {
+    const minLucro = parseFloat(document.getElementById("filtroMinLucro").value) || 0;
+    const maxLucro = parseFloat(document.getElementById("filtroMaxLucro").value) || 1000;
+    const casasSelecionadas = Array.from(document.getElementById("filtroCasas").selectedOptions).map(opt => opt.value);
+    const esportesSelecionados = Array.from(document.getElementById("filtroEsportes").selectedOptions).map(opt => opt.value);
+    return { minLucro, maxLucro, casasSelecionadas, esportesSelecionados };
+  }
+
+  function salvarFiltros() {
+    const filtros = obterFiltros();
+    localStorage.setItem("filtrosSurebet", JSON.stringify(filtros));
+  }
+
+  function restaurarFiltrosSalvos() {
+    const salvos = JSON.parse(localStorage.getItem("filtrosSurebet"));
+    if (!salvos) return;
+    document.getElementById("filtroMinLucro").value = salvos.minLucro;
+    document.getElementById("filtroMaxLucro").value = salvos.maxLucro;
+    const selectCasas = document.getElementById("filtroCasas");
+    const selectEsportes = document.getElementById("filtroEsportes");
+    Array.from(selectCasas.options).forEach(opt => {
+      opt.selected = salvos.casasSelecionadas.includes(opt.value);
+    });
+    Array.from(selectEsportes.options).forEach(opt => {
+      opt.selected = salvos.esportesSelecionados.includes(opt.value);
+    });
+  }
+
+  async function preencherFiltrosDinamicos() {
+    const response = await fetch(API_URL, {
+      headers: { 'Authorization': `Token ${API_KEY}` }
+    });
+    if (!response.ok) return;
+    const dados = await response.json();
+    const casasSet = new Set();
+    const esportesSet = new Set();
+    dados.forEach(arb => {
+      arb.bookmakers.forEach(b => casasSet.add(b.name));
+      esportesSet.add(arb.sport);
+    });
+    const selectCasas = document.getElementById("filtroCasas");
+    const selectEsportes = document.getElementById("filtroEsportes");
+    selectCasas.innerHTML = '';
+    selectEsportes.innerHTML = '';
+    casasSet.forEach(casa => {
+      const opt = document.createElement("option");
+      opt.value = opt.textContent = casa;
+      selectCasas.appendChild(opt);
+    });
+    esportesSet.forEach(esporte => {
+      const opt = document.createElement("option");
+      opt.value = opt.textContent = esporte;
+      selectEsportes.appendChild(opt);
+    });
+    restaurarFiltrosSalvos();
+  }
+
+  async function carregarSurebets() {
+    const { minLucro, maxLucro, casasSelecionadas, esportesSelecionados } = obterFiltros();
+    const response = await fetch(API_URL, {
+      headers: { 'Authorization': `Token ${API_KEY}` }
+    });
+    const aba = document.getElementById("abaSurebets");
+    aba.innerHTML = '';
+    if (!response.ok) {
+      aba.innerHTML = '<p style="color: red;">Erro ao carregar dados da API</p>';
+      return;
+    }
+    const dados = await response.json();
+    const filtrados = dados.filter(arb => {
+      const lucroOk = arb.profit_percent >= minLucro && arb.profit_percent <= maxLucro;
+      const esporteOk = esportesSelecionados.length === 0 || esportesSelecionados.includes(arb.sport);
+      const casas = arb.bookmakers.map(b => b.name);
+      const casaOk = casasSelecionadas.length === 0 || casas.some(casa => casasSelecionadas.includes(casa));
+      return lucroOk && esporteOk && casaOk;
+    });
+    filtrados.slice(0, 10).forEach(arb => {
+      const div = document.createElement('div');
+      div.classList.add('surebet');
+      div.innerHTML = `
+        <strong>${arb.event}</strong> <span style="color: #00c853;">${arb.profit_percent.toFixed(2)}%</span><br/>
+        ${arb.bookmakers.map(b => `${b.name}: ${b.odd} (${b.outcome})`).join(' x ')}
+      `;
+      aba.appendChild(div);
+    });
+  }
+
+  document.querySelector('#filtrosModal button[onclick*="Salvar"]').onclick = () => {
+    salvarFiltros();
+    fecharModais();
+    carregarSurebets();
+  };
+
+  window.addEventListener("DOMContentLoaded", () => {
+    preencherFiltrosDinamicos();
+    carregarSurebets();
+  });
+
+  setInterval(() => {
+    const autoUpdate = document.querySelector('input[type="checkbox"]').checked;
+    if (autoUpdate) carregarSurebets();
+  }, 15000);
+</script>
+
 </body>
 </html>
