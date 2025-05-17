@@ -411,6 +411,11 @@
         if (el.classList.contains('valor') || el.id === 'valorTotalInvestido') {
           el.value = el.value.replace(/[^\d]/g, '');
         }
+        document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      document.querySelectorAll('.odd, .valor, #valorTotalInvestido').forEach(el => {
+        el.addEventListener('input', calcularLucro);
+      });
         calcularLucro();
       });
 
