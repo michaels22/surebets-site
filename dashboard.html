@@ -537,12 +537,13 @@
   async function carregarSurebets() {
     const { minLucro, maxLucro, casasSelecionadas, esportesSelecionados } = obterFiltros();
     const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${API_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
+    method: 'POST',
+    headers: {
+      'Authorization': `Token ${API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({})
+      headers: { 'Authorization': `Token ${API_KEY}` }
     });
     const aba = document.getElementById("abaSurebets");
     aba.innerHTML = '';
