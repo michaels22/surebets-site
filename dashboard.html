@@ -518,11 +518,23 @@ window.addEventListener("DOMContentLoaded", () => {
   const API_KEY = 'de036b91e46a010078123b7e9649c4f5'; // Substitua por sua chave da API
 
   function obterFiltros() {
-    const minLucro = parseFloat(document.getElementById("filtroMinLucro").value) || 0;
-    const maxLucro = parseFloat(document.getElementById("filtroMaxLucro").value) || 1000;
-    const casasSelecionadas = Array.from(document.getElementById("filtroCasas").selectedOptions).map(opt => opt.value);
-    const esportesSelecionados = Array.from(document.getElementById("filtroEsportes").selectedOptions).map(opt => opt.value);
-    return { minLucro, maxLucro, casasSelecionadas, esportesSelecionados };
+  const minEl = document.getElementById("filtroMinLucro");
+  const maxEl = document.getElementById("filtroMaxLucro");
+  const casasEl = document.getElementById("filtroCasas");
+  const esportesEl = document.getElementById("filtroEsportes");
+
+  if (!minEl || !maxEl || !casasEl || !esportesEl) {
+    console.warn("Filtros ainda não estão disponíveis no DOM.");
+    return { minLucro: 0, maxLucro: 1000, casasSelecionadas: [], esportesSelecionados: [] };
+  }
+
+  const minLucro = parseFloat(minEl.value) || 0;
+  const maxLucro = parseFloat(maxEl.value) || 1000;
+  const casasSelecionadas = Array.from(casasEl.selectedOptions).map(opt => opt.value);
+  const esportesSelecionados = Array.from(esportesEl.selectedOptions).map(opt => opt.value);
+
+  return { minLucro, maxLucro, casasSelecionadas, esportesSelecionados };
+};
   }
 
   function salvarFiltros() {
@@ -552,7 +564,12 @@ window.addEventListener("DOMContentLoaded", () => {
           'Authorization': `Token ${API_KEY}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({
+          sport_ids: [],
+          bookmaker_ids: [],
+          min_profit: 0,
+          max_profit: 1000
+        })
       });
     if (!response.ok) return;
     const dados = await response.json();
@@ -587,7 +604,12 @@ window.addEventListener("DOMContentLoaded", () => {
           'Authorization': `Token ${API_KEY}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({
+          sport_ids: [],
+          bookmaker_ids: [],
+          min_profit: 0,
+          max_profit: 1000
+        })
       });
     const aba = document.getElementById("abaSurebets");
     aba.innerHTML = '';
