@@ -5,41 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Betwin Surebets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest">
-window.addEventListener("DOMContentLoaded", () => {
-  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
-  if (botaoSalvar) {
-    botaoSalvar.onclick = () => {
-      salvarFiltros();
-      fecharModais();
-      carregarSurebets();
-    };
-
-  preencherFiltrosDinamicos();
-  carregarSurebets();
-});
-
-</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Inter', sans-serif;
-
+    }
     body {
       display: flex;
       height: 100vh;
       background-color: #0f0f0f;
       color: white;
       overflow: hidden;
-
+    }
     aside {
       width: 250px;
       background-color: #1a1a1a;
       padding: 1.5rem;
       border-right: 1px solid #2a2a2a;
-
+    }
     aside .menu-item {
       display: flex;
       align-items: center;
@@ -50,15 +36,16 @@ window.addEventListener("DOMContentLoaded", () => {
       transition: background 0.3s, color 0.3s;
       cursor: pointer;
       font-size: 0.95rem;
-
+    }
     aside .menu-item:hover {
       background-color: #00c85320;
       color: #00c853;
-
+    }
     aside .menu-item i {
       width: 20px;
       height: 20px;
       color: inherit;
+    }
 
     main {
       flex: 1;
@@ -66,12 +53,14 @@ window.addEventListener("DOMContentLoaded", () => {
       background-color: #121212;
       overflow-y: auto;
       color: white;
+    }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1rem;
+    }
 
     .surebet {
       background: #1f1f1f;
@@ -79,6 +68,7 @@ window.addEventListener("DOMContentLoaded", () => {
       margin-bottom: 1rem;
       border-radius: 8px;
       cursor: pointer;
+    }
 
     .filtros-modal, .calculadora-modal {
       position: fixed;
@@ -91,11 +81,13 @@ window.addEventListener("DOMContentLoaded", () => {
       z-index: 1000;
       display: none;
       color: white;
+    }
 
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
 
     .overlay {
       position: fixed;
@@ -103,6 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
       background: rgba(0,0,0,0.5);
       display: none;
       z-index: 999;
+    }
 
     button {
       background-color: #00c853;
@@ -112,9 +105,11 @@ window.addEventListener("DOMContentLoaded", () => {
       border-radius: 5px;
       cursor: pointer;
       margin-right: 5px;
+    }
 
     .input-group {
       margin: 1rem 0;
+    }
 
     input[type="number"] {
       width: 70px;
@@ -123,30 +118,36 @@ window.addEventListener("DOMContentLoaded", () => {
       color: white;
       border: none;
       border-radius: 5px;
+    }
 
     td input {
       width: 70px;
+    }
 
     table {
       width: 100%;
       margin-top: 1rem;
+    }
 
     th, td {
       padding: 6px;
       text-align: center;
+    }
 
     #abaRegistros table {
       background-color: #1f1f1f;
       border-radius: 8px;
       overflow: hidden;
+    }
 
     #abaRegistros thead {
       background-color: #00c853;
       color: #000;
+    }
 
     #abaRegistros td {
       color: #ccc;
-
+    }
   </style>
 </head>
 <body>
@@ -313,19 +314,23 @@ window.addEventListener("DOMContentLoaded", () => {
     function logout() {
       localStorage.removeItem("logado");
       window.location.href = "index.html";
+    }
 
     function abrirFiltros() {
       document.getElementById('filtrosModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
+    }
 
     function abrirCalculadora() {
       document.getElementById('calculadoraModal').style.display = 'block';
       document.getElementById('overlay').style.display = 'block';
+    }
 
     function fecharModais() {
       document.getElementById('filtrosModal').style.display = 'none';
       document.getElementById('calculadoraModal').style.display = 'none';
       document.getElementById('overlay').style.display = 'none';
+    }
 
     function abrirJanelas() {
       const screenWidth = window.screen.availWidth;
@@ -345,6 +350,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const features = `width=${windowWidth},height=${windowHeight},left=${left},top=0,resizable=yes,scrollbars=yes`;
         window.open(url, `_blank`, features);
       });
+    }
 
     function calcularLucro() {
       const odds = document.querySelectorAll('.odd');
@@ -368,14 +374,15 @@ window.addEventListener("DOMContentLoaded", () => {
         if (!isNaN(valor1)) {
           valor2 = Math.floor((valor1 * odd1) / odd2);
           valores[1].value = valor2;
-
+        }
         totalInvestido = valor1 + valor2;
       } else if (ultimoEditado === valores[1]) {
         if (!isNaN(valor2)) {
           valor1 = Math.floor((valor2 * odd2) / odd1);
           valores[0].value = valor1;
-
+        }
         totalInvestido = valor1 + valor2;
+      }
 
       const lucro1 = Math.floor(valor1 * odd1 - totalInvestido);
       const lucro2 = Math.floor(valor2 * odd2 - totalInvestido);
@@ -384,9 +391,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
       if (document.activeElement !== valorTotalInput) {
         valorTotalInput.value = totalInvestido;
+      }
 
       const porcentagem = totalInvestido > 0 ? ((Math.min(lucro1, lucro2) / totalInvestido) * 100).toFixed(2) : 0;
       porcentagemLucro.textContent = `${porcentagem}%`;
+    }
 
     document.querySelectorAll('.valor').forEach(el => {
       el.addEventListener('focus', () => {
@@ -398,10 +407,10 @@ window.addEventListener("DOMContentLoaded", () => {
       el.addEventListener('input', () => {
         if (el.id === 'valorTotalInvestido') {
           ultimoEditado = null;
-
+        }
         if (el.classList.contains('valor') || el.id === 'valorTotalInvestido') {
           el.value = el.value.replace(/[^\d]/g, '');
-
+        }
         calcularLucro();
       });
 
@@ -415,21 +424,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("abaRegistros").style.display = "block";
       });
     });
-  
-window.addEventListener("DOMContentLoaded", () => {
-  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
-  if (botaoSalvar) {
-    botaoSalvar.onclick = () => {
-      salvarFiltros();
-      fecharModais();
-      carregarSurebets();
-    };
-
-  preencherFiltrosDinamicos();
-  carregarSurebets();
-});
-
-</script>
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -461,7 +456,7 @@ window.addEventListener("DOMContentLoaded", () => {
           document.getElementById("user-days").textContent = `Dias restantes: ${dados.diasRestantes}`;
         } else {
           document.getElementById("user-days").textContent = "Plano não encontrado";
-
+        }
       }).catch((error) => {
         console.error("Erro ao buscar dados do Firestore:", error);
         document.getElementById("user-days").textContent = "Erro ao carregar dados";
@@ -469,164 +464,7 @@ window.addEventListener("DOMContentLoaded", () => {
     } else {
       document.getElementById("user-email").textContent = "Não logado";
       document.getElementById("user-days").textContent = "";
-
-window.addEventListener("DOMContentLoaded", () => {
-  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
-  if (botaoSalvar) {
-    botaoSalvar.onclick = () => {
-      salvarFiltros();
-      fecharModais();
-      carregarSurebets();
-    };
-
-  preencherFiltrosDinamicos();
-  carregarSurebets();
-});
-
-</script>
-
-<!-- Integração com API BetBurger -->
-<script>
-  const API_URL = 'https://rest-api-pr.betburger.com/api/v1/arbs/bot_pro_search';
-  const API_KEY = 'de036b91e46a010078123b7e9649c4f5'; // Substitua por sua chave da API
-
-  function obterFiltros() {
-  const minEl = document.getElementById("filtroMinLucro");
-  const maxEl = document.getElementById("filtroMaxLucro");
-  const casasEl = document.getElementById("filtroCasas");
-  const esportesEl = document.getElementById("filtroEsportes");
-
-  if (!minEl || !maxEl || !casasEl || !esportesEl) {
-    console.warn("Filtros ainda não estão disponíveis no DOM.");
-    return { minLucro: 0, maxLucro: 1000, casasSelecionadas: [], esportesSelecionados: [] };
-
-  const minLucro = parseFloat(minEl.value) || 0;
-  const maxLucro = parseFloat(maxEl.value) || 1000;
-  const casasSelecionadas = Array.from(casasEl.selectedOptions).map(opt => opt.value);
-  const esportesSelecionados = Array.from(esportesEl.selectedOptions).map(opt => opt.value);
-
-  return { minLucro, maxLucro, casasSelecionadas, esportesSelecionados };
-};
-
-  function salvarFiltros() {
-    const filtros = obterFiltros();
-    localStorage.setItem("filtrosSurebet", JSON.stringify(filtros));
-
-  function restaurarFiltrosSalvos() {
-    const salvos = JSON.parse(localStorage.getItem("filtrosSurebet"));
-    if (!salvos) return;
-    document.getElementById("filtroMinLucro").value = salvos.minLucro;
-    document.getElementById("filtroMaxLucro").value = salvos.maxLucro;
-    const selectCasas = document.getElementById("filtroCasas");
-    const selectEsportes = document.getElementById("filtroEsportes");
-    Array.from(selectCasas.options).forEach(opt => {
-      opt.selected = salvos.casasSelecionadas.includes(opt.value);
-    });
-    Array.from(selectEsportes.options).forEach(opt => {
-      opt.selected = salvos.esportesSelecionados.includes(opt.value);
-    });
-
-  async function preencherFiltrosDinamicos() {
-    const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Token ${API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sport_ids: [],
-          bookmaker_ids: [],
-          min_profit: 0,
-          max_profit: 1000
-        })
-      });
-    if (!response.ok) return;
-    const dados = await response.json();
-    const casasSet = new Set();
-    const esportesSet = new Set();
-    dados.forEach(arb => {
-      arb.bookmakers.forEach(b => casasSet.add(b.name));
-      esportesSet.add(arb.sport);
-    });
-    const selectCasas = document.getElementById("filtroCasas");
-    const selectEsportes = document.getElementById("filtroEsportes");
-    selectCasas.innerHTML = '';
-    selectEsportes.innerHTML = '';
-    casasSet.forEach(casa => {
-      const opt = document.createElement("option");
-      opt.value = opt.textContent = casa;
-      selectCasas.appendChild(opt);
-    });
-    esportesSet.forEach(esporte => {
-      const opt = document.createElement("option");
-      opt.value = opt.textContent = esporte;
-      selectEsportes.appendChild(opt);
-    });
-    restaurarFiltrosSalvos();
-
-  async function carregarSurebets() {
-    const { minLucro, maxLucro, casasSelecionadas, esportesSelecionados } = obterFiltros();
-    const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Token ${API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sport_ids: [],
-          bookmaker_ids: [],
-          min_profit: 0,
-          max_profit: 1000
-        })
-      });
-    const aba = document.getElementById("abaSurebets");
-    aba.innerHTML = '';
-    if (!response.ok) {
-      aba.innerHTML = '<p style="color: red;">Erro ao carregar dados da API</p>';
-      return;
-
-    const dados = await response.json();
-    const filtrados = dados.filter(arb => {
-      const lucroOk = arb.profit_percent >= minLucro && arb.profit_percent <= maxLucro;
-      const esporteOk = esportesSelecionados.length === 0 || esportesSelecionados.includes(arb.sport);
-      const casas = arb.bookmakers.map(b => b.name);
-      const casaOk = casasSelecionadas.length === 0 || casas.some(casa => casasSelecionadas.includes(casa));
-      return lucroOk && esporteOk && casaOk;
-    });
-    filtrados.slice(0, 10).forEach(arb => {
-      const div = document.createElement('div');
-      div.classList.add('surebet');
-      div.innerHTML = `
-        <strong>${arb.event}</strong> <span style="color: #00c853;">${arb.profit_percent.toFixed(2)}%</span><br/>
-        ${arb.bookmakers.map(b => `${b.name}: ${b.odd} (${b.outcome})`).join(' x ')}
-      `;
-      aba.appendChild(div);
-    });
-
-  window.addEventListener("DOMContentLoaded", () => {
-    preencherFiltrosDinamicos();
-    carregarSurebets();
-  });
-
-  setInterval(() => {
-    const autoUpdate = document.querySelector('input[type="checkbox"]').checked;
-    if (autoUpdate) carregarSurebets();
-  }, 15000);
-
-window.addEventListener("DOMContentLoaded", () => {
-  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
-  if (botaoSalvar) {
-    botaoSalvar.onclick = () => {
-      salvarFiltros();
-      fecharModais();
-      carregarSurebets();
-    };
-
-  preencherFiltrosDinamicos();
-  carregarSurebets();
-});
-
-</script>
-
+    }
+  </script>
 </body>
 </html>
