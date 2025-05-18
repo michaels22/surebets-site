@@ -5,7 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Betwin Surebets</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@latest">
+window.addEventListener("DOMContentLoaded", () => {
+  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
+  if (botaoSalvar) {
+    botaoSalvar.onclick = () => {
+      salvarFiltros();
+      fecharModais();
+      carregarSurebets();
+    };
+  }
+
+  preencherFiltrosDinamicos();
+  carregarSurebets();
+});
+
+</script>
   <style>
     * {
       margin: 0;
@@ -424,7 +439,22 @@
         document.getElementById("abaRegistros").style.display = "block";
       });
     });
-  </script>
+  
+window.addEventListener("DOMContentLoaded", () => {
+  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
+  if (botaoSalvar) {
+    botaoSalvar.onclick = () => {
+      salvarFiltros();
+      fecharModais();
+      carregarSurebets();
+    };
+  }
+
+  preencherFiltrosDinamicos();
+  carregarSurebets();
+});
+
+</script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -465,7 +495,22 @@
       document.getElementById("user-email").textContent = "Não logado";
       document.getElementById("user-days").textContent = "";
     }
-  </script>
+  
+window.addEventListener("DOMContentLoaded", () => {
+  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
+  if (botaoSalvar) {
+    botaoSalvar.onclick = () => {
+      salvarFiltros();
+      fecharModais();
+      carregarSurebets();
+    };
+  }
+
+  preencherFiltrosDinamicos();
+  carregarSurebets();
+});
+
+</script>
 
 <!-- Integração com API BetBurger -->
 <script>
@@ -569,11 +614,7 @@
     });
   }
 
-  document.querySelector('#filtrosModal button[onclick*="Salvar"]').onclick = () => {
-    salvarFiltros();
-    fecharModais();
-    carregarSurebets();
-  };
+  
 
   window.addEventListener("DOMContentLoaded", () => {
     preencherFiltrosDinamicos();
@@ -584,6 +625,21 @@
     const autoUpdate = document.querySelector('input[type="checkbox"]').checked;
     if (autoUpdate) carregarSurebets();
   }, 15000);
+
+window.addEventListener("DOMContentLoaded", () => {
+  const botaoSalvar = document.querySelector('#filtrosModal button[onclick*="Salvar"]');
+  if (botaoSalvar) {
+    botaoSalvar.onclick = () => {
+      salvarFiltros();
+      fecharModais();
+      carregarSurebets();
+    };
+  }
+
+  preencherFiltrosDinamicos();
+  carregarSurebets();
+});
+
 </script>
 
 </body>
