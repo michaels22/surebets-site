@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Betwin Surebets</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Betwin Surebets</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
     * {
       margin: 0;
       padding: 0;
@@ -151,166 +152,165 @@
   </style>
 </head>
 <body>
-  <aside>
-    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
-  <img src="logo-betwin.png" alt="Logo" style="max-width: 100%; height: 40px;" />
+<aside>
+<div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+<img alt="Logo" src="logo-betwin.png" style="max-width: 100%; height: 40px;"/>
 </div>
-    <div style="margin-bottom: 2rem;">
-      <p id="user-email" style="font-weight: 600;">Carregando...</p>
-      <p id="user-days" style="font-size: 0.85rem; color: #888;">Dias restantes: ...</p>
-    </div>
-    <nav>
-      <ul style="list-style: none; padding: 0;">
-        <li class="menu-item" id="menuSurebets">
-          <i data-lucide="activity"></i>
-          <span>Surebets</span>
-        </li>
-        <li class="menu-item" id="menuRegistros">
-          <i data-lucide="book-open"></i>
-          <span>Registros</span>
-        </li>
-        <li class="menu-item">
-          <i data-lucide="life-buoy"></i>
-          <span>Suporte</span>
-        </li>
-        <li class="menu-item" onclick="abrirCalculadora()">
-          <i data-lucide="calculator"></i>
-          <span>Calculadora</span>
-        </li>
-        <li class="menu-item" onclick="logout()">
-          <i data-lucide="log-out"></i>
-          <span>Sair</span>
-        </li>
-      </ul>
-    </nav>
-  </aside>
-
-  <main>
-    <header>
-      <div>
-        <label for="tipo">Tipo:</label>
-        <select id="tipo"><option value="pre">Pre</option></select>
-        <label><input type="checkbox" checked /> Auto Update</label>
-        <label><input type="checkbox" /> Som De Alerta</label>
-      </div>
-      <button onclick="abrirFiltros()">Filtros</button>
-    </header>
-
-    <div id="abaSurebets">
-      <div class="surebet" onclick="abrirCalculadora()">
+<div style="margin-bottom: 2rem;">
+<p id="user-email" style="font-weight: 600;">Carregando...</p>
+<p id="user-days" style="font-size: 0.85rem; color: #888;">Dias restantes: ...</p>
+</div>
+<nav>
+<ul style="list-style: none; padding: 0;">
+<li class="menu-item" id="menuSurebets">
+<i data-lucide="activity"></i>
+<span>Surebets</span>
+</li>
+<li class="menu-item" id="menuRegistros">
+<i data-lucide="book-open"></i>
+<span>Registros</span>
+</li>
+<li class="menu-item">
+<i data-lucide="life-buoy"></i>
+<span>Suporte</span>
+</li>
+<li class="menu-item" onclick="abrirCalculadora()">
+<i data-lucide="calculator"></i>
+<span>Calculadora</span>
+</li>
+<li class="menu-item" onclick="logout()">
+<i data-lucide="log-out"></i>
+<span>Sair</span>
+</li>
+</ul>
+</nav>
+</aside>
+<main>
+<header>
+<div>
+<label for="tipo">Tipo:</label>
+<select id="tipo"><option value="pre">Pre</option></select>
+<label><input checked="" type="checkbox"/> Auto Update</label>
+<label><input type="checkbox"/> Som De Alerta</label>
+</div>
+<button onclick="abrirFiltros()">Filtros</button>
+</header>
+<div id="abaSurebets">
+<div class="surebet" onclick="abrirCalculadora()">
         kc royals - chi white sox <span style="color: #00c853;">2.5%</span>
-      </div>
-    </div>
-
-    <div id="abaRegistros" style="display: none;">
-      <h2 style="margin-bottom: 1rem;">Registros</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Evento</th>
-            <th>Casa 1</th>
-            <th>Odd 1</th>
-            <th>Casa 2</th>
-            <th>Odd 2</th>
-            <th>Lucro</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>05/05/2025</td>
-            <td>Time A vs Time B</td>
-            <td>Blaze</td>
-            <td>2.00</td>
-            <td>Bet365</td>
-            <td>2.00</td>
-            <td style="color: #00c853;">+2.5%</td>
-          </tr>
-          <tr>
-            <td>04/05/2025</td>
-            <td>Time X vs Time Y</td>
-            <td>Betano</td>
-            <td>2.10</td>
-            <td>Pixbet</td>
-            <td>1.95</td>
-            <td style="color: #00c853;">+1.2%</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
-
-  <div class="overlay" id="overlay" onclick="fecharModais()"></div>
-
-  <div class="filtros-modal" id="filtrosModal">
-    <div class="modal-header">
-      <h3>Filtros</h3>
-      <button onclick="fecharModais()">X</button>
-    </div>
-    <div class="input-group">
-      <label>Porcentagem de ARBS</label>
-      <input type="number" value="0" /> a 
-      <input type="number" value="1000" /> %
-    </div>
-    <div class="input-group">
-      <label>Selecione as casas</label>
-      <select><option>Bet365</option></select>
-    </div>
-    <div class="input-group">
-      <label>Selecione os esportes</label>
-      <select><option>MLB</option></select>
-    </div>
-    <button onclick="fecharModais()">Salvar</button>
-  </div>
-
-  <div class="calculadora-modal" id="calculadoraModal">
-  <div class="modal-header">
-    <h3>Calculadora</h3>
-    <button onclick="fecharModais()">X</button>
-  </div>
-  <div class="subtitle">kc royals - chi white sox</div>
-  <table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
-    <thead>
-      <tr>
-        <th style="text-align: left; padding-left: 12px; color: #ccc;">Casa</th>
-        <th style="text-align: left; padding-left: 12px; color: #ccc;">Aposta</th>
-        <th style="text-align: left; padding-left: 12px; color: #ccc;">Odd</th>
-        <th style="text-align: left; padding-left: 12px; color: #ccc;">Valor</th>
-        <th style="text-align: left; padding-left: 12px; color: #ccc;">Lucro</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="text-align: left; padding-left: 12px; color:#f3b13e;">McGames</td>
-        <td style="text-align: left; padding-left: 12px;">Mais de (4.5)</td>
-        <td style="text-align: left; padding-left: 12px;"><input type="number" class="odd" value="2.05" step="0.01" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
-        <td style="text-align: left; padding-left: 12px;"><input type="number" class="valor" value="50" step="1" min="0" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
-        <td class="lucro" style="text-align: left; padding-left: 12px; color:#00c853; font-weight: bold;">0</td>
-      </tr>
-      <tr>
-        <td style="text-align: left; padding-left: 12px; color:#f3b13e;">Bet365</td>
-        <td style="text-align: left; padding-left: 12px;">Menos de (4.5)</td>
-        <td style="text-align: left; padding-left: 12px;"><input type="number" class="odd" value="2.05" step="0.01" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
-        <td style="text-align: left; padding-left: 12px;"><input type="number" class="valor" value="50" step="1" min="0" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" /></td>
-        <td class="lucro" style="text-align: left; padding-left: 12px; color:#00c853; font-weight: bold;">0</td>
-      </tr>
-    </tbody>
-  </table>
-  <div class="resultado" style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.95rem; margin-top: 10px;">
-    <div style="display: flex; flex-direction: column; align-items: flex-start;">
-      <strong>Valor total</strong>
-      <input type="number" id="valorTotalInvestido" placeholder="Total" step="1" min="0" style="margin-top: 6px; width: 90px; padding: 10px; background-color: #2a2a2a; border-radius: 6px; border: none; color: #fff; text-align: center;" />
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: flex-end;">
-      <strong style="font-size: 0.95rem; color: #ccc;">Porcentagem ganha</strong>
-      <strong id="porcentagemLucro" class="lucro" style="font-size: 1.5rem; margin-top: 6px; color: #00c853;">0%</strong>
-    </div>
-  </div>
-  <br />
-  <button onclick="abrirJanelas()">Abrir todas as casas</button>
 </div>
-
-  <script>
+</div>
+<div id="abaRegistros" style="display: none;">
+<h2 style="margin-bottom: 1rem;">Registros</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Evento</th>
+<th>Casa 1</th>
+<th>Odd 1</th>
+<th>Casa 2</th>
+<th>Odd 2</th>
+<th>Lucro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>05/05/2025</td>
+<td>Time A vs Time B</td>
+<td>Blaze</td>
+<td>2.00</td>
+<td>Bet365</td>
+<td>2.00</td>
+<td style="color: #00c853;">+2.5%</td>
+</tr>
+<tr>
+<td>04/05/2025</td>
+<td>Time X vs Time Y</td>
+<td>Betano</td>
+<td>2.10</td>
+<td>Pixbet</td>
+<td>1.95</td>
+<td style="color: #00c853;">+1.2%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<div class="overlay" id="overlay" onclick="fecharModais()"></div>
+<div class="filtros-modal" id="filtrosModal">
+<div class="modal-header">
+<h3>Filtros</h3>
+<button onclick="fecharModais()">X</button>
+</div>
+<div class="input-group">
+<label>Porcentagem de ARBS</label>
+<input type="number" value="0"/> a 
+      <input type="number" value="1000"/> %
+    </div>
+<div class="input-group">
+<label>Selecione as casas</label>
+<select><option>Bet365</option></select>
+</div>
+<div class="input-group">
+<label>Selecione os esportes</label>
+<select><option>MLB</option></select>
+</div>
+<button onclick="fecharModais()">Salvar</button>
+<div class="input-group">
+<label>Lucro mínimo (%)</label>
+<input id="minProfit" min="0" type="number" value="0"/>
+</div><div class="input-group">
+<label>Bookmakers (IDs separados por vírgula)</label>
+<input id="bookmakers" placeholder="ex: 314,308,109" type="text"/>
+</div></div>
+<div class="calculadora-modal" id="calculadoraModal">
+<div class="modal-header">
+<h3>Calculadora</h3>
+<button onclick="fecharModais()">X</button>
+</div>
+<div class="subtitle">kc royals - chi white sox</div>
+<table style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
+<thead>
+<tr>
+<th style="text-align: left; padding-left: 12px; color: #ccc;">Casa</th>
+<th style="text-align: left; padding-left: 12px; color: #ccc;">Aposta</th>
+<th style="text-align: left; padding-left: 12px; color: #ccc;">Odd</th>
+<th style="text-align: left; padding-left: 12px; color: #ccc;">Valor</th>
+<th style="text-align: left; padding-left: 12px; color: #ccc;">Lucro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; padding-left: 12px; color:#f3b13e;">McGames</td>
+<td style="text-align: left; padding-left: 12px;">Mais de (4.5)</td>
+<td style="text-align: left; padding-left: 12px;"><input class="odd" step="0.01" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" type="number" value="2.05"/></td>
+<td style="text-align: left; padding-left: 12px;"><input class="valor" min="0" step="1" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" type="number" value="50"/></td>
+<td class="lucro" style="text-align: left; padding-left: 12px; color:#00c853; font-weight: bold;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; padding-left: 12px; color:#f3b13e;">Bet365</td>
+<td style="text-align: left; padding-left: 12px;">Menos de (4.5)</td>
+<td style="text-align: left; padding-left: 12px;"><input class="odd" step="0.01" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" type="number" value="2.05"/></td>
+<td style="text-align: left; padding-left: 12px;"><input class="valor" min="0" step="1" style="background:#2a2a2a; color:white; border:none; padding:10px; border-radius:6px; width:80px; text-align:center;" type="number" value="50"/></td>
+<td class="lucro" style="text-align: left; padding-left: 12px; color:#00c853; font-weight: bold;">0</td>
+</tr>
+</tbody>
+</table>
+<div class="resultado" style="display: flex; justify-content: space-between; align-items: flex-start; font-size: 0.95rem; margin-top: 10px;">
+<div style="display: flex; flex-direction: column; align-items: flex-start;">
+<strong>Valor total</strong>
+<input id="valorTotalInvestido" min="0" placeholder="Total" step="1" style="margin-top: 6px; width: 90px; padding: 10px; background-color: #2a2a2a; border-radius: 6px; border: none; color: #fff; text-align: center;" type="number"/>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end;">
+<strong style="font-size: 0.95rem; color: #ccc;">Porcentagem ganha</strong>
+<strong class="lucro" id="porcentagemLucro" style="font-size: 1.5rem; margin-top: 6px; color: #00c853;">0%</strong>
+</div>
+</div>
+<br/>
+<button onclick="abrirJanelas()">Abrir todas as casas</button>
+</div>
+<script>
     function logout() {
       localStorage.removeItem("logado");
       window.location.href = "index.html";
@@ -425,8 +425,7 @@
       });
     });
   </script>
-
-  <script type="module">
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
@@ -466,5 +465,87 @@
       document.getElementById("user-days").textContent = "";
     }
   </script>
-</body>
+<script>
+const accessToken = "de036b91e46a010078123b7e9649c4f5";
+
+function getFiltros() {
+  const minProfit = document.getElementById("minProfit")?.value || "0";
+  const bookmakersRaw = document.getElementById("bookmakers")?.value || "";
+  const bookmakersList = bookmakersRaw.split(",").map(e => e.trim()).filter(e => e);
+  return { minProfit, bookmakersList };
+}
+
+async function buscarArbs(tipo = "pre") {
+  const urlBase = tipo === "live"
+    ? "https://rest-api-lv.betburger.com/api/v1"
+    : "https://rest-api-pr.betburger.com/api/v1";
+  const url = `${urlBase}/arbs/bot_pro_search`;
+  const formData = new URLSearchParams();
+  const { minProfit, bookmakersList } = getFiltros();
+
+  formData.append("access_token", accessToken);
+  formData.append("per_page", "20");
+  formData.append("sort_by", "profit_percent");
+
+  if (bookmakersList.length > 0) {
+    bookmakersList.forEach(id => formData.append("bookmakers2[]", id));
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept": "application/json"
+    },
+    body: formData
+  });
+
+  const data = await response.json();
+  if (!data || !data.arbs || !data.bets) return [];
+
+  return data.arbs
+    .filter(arb => arb.percent >= parseFloat(minProfit))
+    .map(arb => {
+      const bet1 = data.bets.find(b => b.id === arb.bet1_id);
+      const bet2 = data.bets.find(b => b.id === arb.bet2_id);
+      return { arb, bet1, bet2 };
+    })
+    .filter(pair => pair.bet1 && pair.bet2);
+}
+
+function formatarArb({ arb, bet1, bet2 }) {
+  return `
+    <div class="surebet" style="margin-bottom: 20px; border: 1px solid #ddd; padding: 10px;">
+      <strong>${arb.team1_name} vs ${arb.team2_name}</strong><br>
+      <span><strong>Lucro:</strong> ${arb.percent.toFixed(2)}%</span><br>
+      <span><strong>Casa 1:</strong> ${bet1.bookmaker_event_name} @ ${bet1.koef} — 
+        <a href="${bet1.bookmaker_event_direct_link}" target="_blank">Abrir</a></span><br>
+      <span><strong>Casa 2:</strong> ${bet2.bookmaker_event_name} @ ${bet2.koef} — 
+        <a href="${bet2.bookmaker_event_direct_link}" target="_blank">Abrir</a></span><br>
+      ${bet1.current_score || bet2.current_score ? `<span><strong>Placar:</strong> ${bet1.current_score || bet2.current_score}</span><br>` : ""}
+    </div>
+  `;
+}
+
+async function atualizarPainel() {
+  const aba = document.getElementById("abaSurebets");
+  aba.innerHTML = "<p>Carregando apostas...</p>";
+
+  const [preArbs, liveArbs] = await Promise.all([
+    buscarArbs("pre"),
+    buscarArbs("live")
+  ]);
+
+  const todasArbs = [...preArbs, ...liveArbs];
+  if (todasArbs.length === 0) {
+    aba.innerHTML = "<p>Nenhuma surebet encontrada.</p>";
+    return;
+  }
+
+  aba.innerHTML = todasArbs.map(formatarArb).join("");
+}
+
+atualizarPainel();
+setInterval(atualizarPainel, 60000);
+</script></body>
 </html>
